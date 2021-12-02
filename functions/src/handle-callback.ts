@@ -1,4 +1,4 @@
-import { onCreateUpdate } from './commands/create-update';
+import { onCreateUpdate } from './commands/on-create-update';
 import { CreateSession } from './types/CreateSession';
 import { SessionCallback } from './types/SessionCallback';
 

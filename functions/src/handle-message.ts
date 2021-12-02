@@ -1,5 +1,5 @@
 import { CreateSession } from './types/CreateSession';
-import { startCreate, onCreateMessage } from './commands/create-message';
+import { startCreate, onCreateMessage } from './commands/on-create-message';
 import { unrecognized } from './commands/unrecognized';
 import { SessionMessage } from './types/SessionMessage';
 

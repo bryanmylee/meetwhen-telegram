@@ -1,29 +1,36 @@
 import type { Dayjs } from 'dayjs';
-import { send } from '../utils/send';
 import { InlineKeyboardButton, SendMessage } from 'telegram-typings';
-import { range } from '../utils/range';
 import { edit } from '../utils/edit';
+import { range } from '../utils/range';
+import { send } from '../utils/send';
 
-export interface RenderOptions extends Omit<SendMessage, 'reply_markup'> {
-  update_message_id?: number;
+export interface RenderOptions {
+  updateMessageId?: number;
+  earliestDate?: Dayjs;
+  selectedDate?: Dayjs;
 }
 
 export const renderCalendar = async (
   date: Dayjs,
-  { update_message_id, ...options }: RenderOptions
+  { text, ...options }: SendMessage,
+  { updateMessageId, earliestDate, selectedDate }: RenderOptions = {}
 ): Promise<void> => {
   const monthButtons = getMonthButtons(date);
-  const dateButtons = getDateButtons(date);
+  const dateButtons = getDateButtons(date, { earliestDate, selectedDate });
   const inline_keyboard = monthButtons.concat(dateButtons);
-  if (update_message_id !== undefined) {
+  const withSelectedText =
+    text + (selectedDate !== undefined ? ` \\(${selectedDate.format('D MMM YYYY')}\\)` : '');
+  if (updateMessageId !== undefined) {
     edit({
       ...options,
-      message_id: update_message_id,
+      text: withSelectedText,
+      message_id: updateMessageId,
       reply_markup: { inline_keyboard },
     });
   } else {
     send({
       ...options,
+      text: withSelectedText,
       reply_markup: { inline_keyboard },
     });
   }
@@ -48,20 +55,35 @@ const getMonthButtons = (date: Dayjs): InlineKeyboardButton[][] => {
   ];
 };
 
-const getDateButtons = (date: Dayjs): InlineKeyboardButton[][] => {
+const getDateButtons = (
+  date: Dayjs,
+  { earliestDate, selectedDate }: RenderOptions
+): InlineKeyboardButton[][] => {
   const firstDayOffset = date.day();
-  console.log(firstDayOffset);
   const inline_keyboard: InlineKeyboardButton[][] = [];
   let currentKeyboardRow: InlineKeyboardButton[] = range(firstDayOffset).map(() => ({
     text: ' ',
     callback_data: 'NOOP_' + date.format('YYYYMMDD'),
   }));
 
-  for (const dateOfMonth of range(1, date.daysInMonth() + 1)) {
-    currentKeyboardRow.push({
-      text: dateOfMonth.toString(),
-      callback_data: 'SELECT_' + date.date(dateOfMonth).format('YYYYMMDD'),
-    });
+  for (const numOfMonth of range(1, date.daysInMonth() + 1)) {
+    const dateOfMonth = date.date(numOfMonth);
+    if (selectedDate !== undefined && !dateOfMonth.isSame(selectedDate, 'day')) {
+      currentKeyboardRow.push({
+        text: ' ',
+        callback_data: 'NOOP_' + dateOfMonth.format('YYYYMMDD'),
+      });
+    } else if (earliestDate !== undefined && dateOfMonth.isBefore(earliestDate, 'day')) {
+      currentKeyboardRow.push({
+        text: ' ',
+        callback_data: 'NOOP_' + dateOfMonth.format('YYYYMMDD'),
+      });
+    } else {
+      currentKeyboardRow.push({
+        text: numOfMonth.toString(),
+        callback_data: 'SELECT_' + dateOfMonth.format('YYYYMMDD'),
+      });
+    }
     if (currentKeyboardRow.length === 7) {
       inline_keyboard.push(currentKeyboardRow);
       currentKeyboardRow = [];

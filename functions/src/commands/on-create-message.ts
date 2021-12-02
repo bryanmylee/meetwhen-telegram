@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { CreateSession, CREATE_PROMPTS } from '../types/CreateSession';
 import { SessionMessage } from '../types/SessionMessage';
 import { renderCalendar } from '../views/calendar';
@@ -44,16 +44,28 @@ export const setMeetingName = async (message: SessionMessage<CreateSession>): Pr
 
 export const promptStartDate = async (chat_id: number): Promise<void> => {
   const date = dayjs();
-  renderCalendar(date, {
-    chat_id,
-    text: CREATE_PROMPTS.MEETING_DATE_START,
-  });
+  renderCalendar(
+    date,
+    {
+      chat_id,
+      text: CREATE_PROMPTS.MEETING_DATE_START,
+    },
+    {
+      earliestDate: dayjs(),
+    }
+  );
 };
 
-export const promptEndDate = async (chat_id: number): Promise<void> => {
+export const promptEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
   const date = dayjs();
-  renderCalendar(date, {
-    chat_id,
-    text: CREATE_PROMPTS.MEETING_DATE_END,
-  });
+  renderCalendar(
+    date,
+    {
+      chat_id,
+      text: CREATE_PROMPTS.MEETING_DATE_END,
+    },
+    {
+      earliestDate: startDate.add(1, 'day'),
+    }
+  );
 };

@@ -2,14 +2,14 @@ import dayjs from 'dayjs';
 import { CreateSession, CREATE_PROMPTS } from '../types/CreateSession';
 import { SessionCallback } from '../types/SessionCallback';
 import { renderCalendar } from '../views/calendar';
-import { promptEndDate } from './create-message';
+import { promptEndDate } from './on-create-message';
 
 export const onCreateUpdate = async (callback: SessionCallback<CreateSession>): Promise<void> => {
   switch (callback.session.latestPrompt) {
     case 'MEETING_DATE_START':
-      await updateStartDate(callback);
-      return promptEndDate(callback.from.id);
+      return updateStartDate(callback);
     case 'MEETING_DATE_END':
+    case 'MEETING_TIME_START':
       await updateEndDate(callback);
   }
 };
@@ -23,13 +23,31 @@ export const updateStartDate = async (callback: SessionCallback<CreateSession>):
   const [, action, date] = data.match(/(\w+)_(\w+)/)!;
   switch (action) {
     case 'PAGE':
-      return renderCalendar(dayjs(date), {
-        update_message_id: callback.message?.message_id,
-        chat_id: callback.from.id,
-        text: CREATE_PROMPTS.MEETING_DATE_START,
-      });
+      return renderCalendar(
+        dayjs(date),
+        {
+          chat_id: callback.from.id,
+          text: CREATE_PROMPTS.MEETING_DATE_START,
+        },
+        {
+          updateMessageId: callback.message?.message_id,
+          earliestDate: dayjs(),
+        }
+      );
     case 'SELECT':
-      return setStartDate(callback, date);
+      await renderCalendar(
+        dayjs(date),
+        {
+          chat_id: callback.from.id,
+          text: CREATE_PROMPTS.MEETING_DATE_START,
+        },
+        {
+          updateMessageId: callback.message?.message_id,
+          selectedDate: dayjs(date),
+        }
+      );
+      await setStartDate(callback, date);
+      return promptEndDate(callback.from.id, dayjs(date));
   }
 };
 
@@ -53,12 +71,28 @@ export const updateEndDate = async (callback: SessionCallback<CreateSession>): P
   const [, action, date] = data.match(/(\w+)_(\w+)/)!;
   switch (action) {
     case 'PAGE':
-      return renderCalendar(dayjs(date), {
-        update_message_id: callback.message?.message_id,
-        chat_id: callback.from.id,
-        text: CREATE_PROMPTS.MEETING_DATE_END,
-      });
+      return renderCalendar(
+        dayjs(date),
+        {
+          chat_id: callback.from.id,
+          text: CREATE_PROMPTS.MEETING_DATE_END,
+        },
+        {
+          updateMessageId: callback.message?.message_id,
+        }
+      );
     case 'SELECT':
+      await renderCalendar(
+        dayjs(date),
+        {
+          chat_id: callback.from.id,
+          text: CREATE_PROMPTS.MEETING_DATE_END,
+        },
+        {
+          updateMessageId: callback.message?.message_id,
+          selectedDate: dayjs(date),
+        }
+      );
       return setEndDate(callback, date);
   }
 };
