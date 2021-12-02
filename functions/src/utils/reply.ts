@@ -1,21 +1,12 @@
-import axios from 'axios';
 import type { SendMessage, Message } from 'telegram-typings';
-import { TELEGRAM_API } from '../env';
+import { send } from './send';
 
 export const reply = async (
   to: Message,
   options: Omit<SendMessage, 'chat_id' | 'parse_mode'>
 ): Promise<Message> => {
-  try {
-    const response = await axios.post(TELEGRAM_API + '/sendMessage', {
-      parse_mode: 'MarkdownV2',
-      ...options,
-      chat_id: to.chat.id,
-    });
-    console.log('->', response.data);
-    return response.data as Message;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  return send({
+    ...options,
+    chat_id: to.chat.id,
+  });
 };

@@ -1,5 +1,5 @@
 import { CreateSession } from './types/CreateSession';
-import { startCreate, handleCreate } from './commands/create';
+import { startCreate, onCreateMessage } from './commands/create-message';
 import { unrecognized } from './commands/unrecognized';
 import { SessionMessage } from './types/SessionMessage';
 
@@ -19,6 +19,6 @@ export const handleMessage = async (message: SessionMessage): Promise<void> => {
   }
   switch (message.session.command) {
     case 'create':
-      return handleCreate(message as SessionMessage<CreateSession>);
+      return onCreateMessage(message as SessionMessage<CreateSession>);
   }
 };
