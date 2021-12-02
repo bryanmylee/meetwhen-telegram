@@ -57,9 +57,8 @@ export const promptStartDate = async (chat_id: number): Promise<void> => {
 };
 
 export const promptEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
-  const date = dayjs();
   renderCalendar(
-    date,
+    startDate.add(1, 'day'),
     {
       chat_id,
       text: CREATE_PROMPTS.MEETING_DATE_END,
