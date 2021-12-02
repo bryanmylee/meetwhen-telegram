@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "module": "commonjs",
+    "esModuleInterop": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
