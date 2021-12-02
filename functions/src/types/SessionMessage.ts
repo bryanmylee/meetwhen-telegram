@@ -1,7 +1,5 @@
-import type { Message } from 'telegram-typings';
+import { Message } from 'telegram-typings';
+import { BindSession } from './BindSession';
 import { Session } from './Session';
 
-export interface SessionMessage<T extends Session = Session> extends Message {
-  session: T;
-  updateSession: (newSession: T) => Promise<void>;
-}
+export interface SessionMessage<T extends Session = Session> extends BindSession<T>, Message {}

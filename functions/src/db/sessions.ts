@@ -1,7 +1,6 @@
-import type { Message } from 'telegram-typings';
 import * as admin from 'firebase-admin';
 import { Session } from '../types/Session';
-import { SessionMessage } from '../types/SessionMessage';
+import { BindSession } from '../types/BindSession';
 
 const sessionRepo = admin.firestore().collection('session');
 
@@ -16,12 +15,12 @@ export const updateSessionWithId = async (id: string, session: Session): Promise
   await ref.set(session);
 };
 
-export const injectSession = async (message: Message): Promise<SessionMessage> => {
-  const id = message.chat.id.toString();
-  const session = await findSessionById(id);
+export const bindSession = async <T extends Session = Session>(
+  id: string
+): Promise<BindSession<T>> => {
+  const session = (await findSessionById(id)) as T;
   return {
-    ...message,
     session,
-    updateSession: (newSession: Session) => updateSessionWithId(id, newSession),
+    updateSession: (newSession: T) => updateSessionWithId(id, newSession),
   };
 };

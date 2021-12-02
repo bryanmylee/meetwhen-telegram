@@ -5,7 +5,7 @@ admin.initializeApp({
 
 import * as functions from 'firebase-functions';
 import type { Message } from 'telegram-typings';
-import { injectSession } from './db/sessions';
+import { bindSession } from './db/sessions';
 import { handleMessage } from './handle-message';
 import { setCommands } from './set-commands';
 
@@ -15,7 +15,8 @@ export const api = functions.region('asia-east2').https.onRequest(async (req, re
   console.log('<-', req.body);
   const message = req.body.message as Message | undefined;
   if (message !== undefined) {
-    handleMessage(await injectSession(message));
+    const { session, updateSession } = await bindSession(message.chat.id.toString());
+    handleMessage({ ...message, session, updateSession });
   }
   res.send();
 });
