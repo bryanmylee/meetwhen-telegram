@@ -1,7 +1,7 @@
 import { Session } from './Session';
 
 export const CREATE_PROMPTS = {
-  MEETING_NAME: 'Give your meet a name:',
+  MEETING_NAME: 'Send me the name of your meet\\.',
 };
 
 export type CreatePrompt = keyof typeof CREATE_PROMPTS;

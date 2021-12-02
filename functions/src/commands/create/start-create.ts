@@ -12,7 +12,10 @@ export const startCreate = async (message: Message): Promise<void> => {
 
   updateSessionWithId(message.chat.id.toString(), session);
 
-  reply(message, {
+  await reply(message, {
+    text: '*Creating a new meet\\!*',
+  });
+  await reply(message, {
     text: CREATE_PROMPTS.MEETING_NAME,
   });
 };
