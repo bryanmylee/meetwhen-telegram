@@ -12,6 +12,7 @@ import { setCommands } from './set-commands';
 setCommands();
 
 export const api = functions.region('asia-east2').https.onRequest(async (req, res) => {
+  console.log('<-', req.body);
   const message = req.body.message as Message | undefined;
   if (message !== undefined) {
     handleMessage(await injectSession(message));
