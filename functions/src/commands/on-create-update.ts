@@ -79,6 +79,7 @@ export const updateEndDate = async (callback: SessionCallback<CreateSession>): P
         },
         {
           updateMessageId: callback.message?.message_id,
+          earliestDate: dayjs(callback.session.startDate, 'YYYYMMDD'),
         }
       );
     case 'SELECT':
