@@ -5,12 +5,16 @@ admin.initializeApp({
 
 import * as functions from 'firebase-functions';
 import type { Message } from 'telegram-typings';
-import { handleMessage } from './handle';
+import { injectSession } from './db/sessions';
+import { handleMessage } from './handle-message';
+import { setCommands } from './set-commands';
+
+setCommands();
 
 export const api = functions.region('asia-east2').https.onRequest(async (req, res) => {
   const message = req.body.message as Message | undefined;
   if (message !== undefined) {
-    handleMessage(message);
+    handleMessage(await injectSession(message));
   }
   res.send();
 });
