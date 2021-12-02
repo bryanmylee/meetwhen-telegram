@@ -21,12 +21,12 @@ export const api = functions.region('asia-east2').https.onRequest(async (req, re
     const { session, updateSession } = await bindSession(`${username}-${chatId}`);
     handleMessage({ ...message, session, updateSession });
   }
-  const callbackQuery = req.body.callback_query as CallbackQuery | undefined;
-  if (callbackQuery !== undefined) {
-    const username = callbackQuery.from.username ?? '';
-    const chatId = callbackQuery.message?.chat.id ?? '';
+  const callback = req.body.callback_query as CallbackQuery | undefined;
+  if (callback !== undefined) {
+    const username = callback.from.username ?? '';
+    const chatId = callback.from.id;
     const { session, updateSession } = await bindSession(`${username}-${chatId}`);
-    handleCallback({ ...callbackQuery, session, updateSession });
+    handleCallback({ ...callback, session, updateSession });
   }
   res.send();
 });

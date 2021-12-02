@@ -13,5 +13,8 @@ export type CreatePrompt = keyof typeof CREATE_PROMPTS;
 
 export interface CreateSession extends Session<CreatePrompt> {
   meetingName?: string;
-  UI_DATE_PICKER_MONTH?: string;
+  startDate?: string;
+  endDate?: string;
+  startHour?: string;
+  endHour?: string;
 }

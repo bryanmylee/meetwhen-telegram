@@ -3,6 +3,7 @@ import { CreateSession, CREATE_PROMPTS } from '../types/CreateSession';
 import { SessionMessage } from '../types/SessionMessage';
 import { renderCalendar } from '../views/calendar';
 import { reply } from '../utils/reply';
+import { send } from '../utils/send';
 
 export const startCreate = async (message: SessionMessage<CreateSession>): Promise<void> => {
   message.updateSession({
@@ -12,22 +13,23 @@ export const startCreate = async (message: SessionMessage<CreateSession>): Promi
   await reply(message, {
     text: '*Creating a new meet\\!*',
   });
-  promptMeetingName(message);
+  promptMeetingName(message.chat.id);
 };
 
 export const onCreateMessage = async (message: SessionMessage<CreateSession>): Promise<void> => {
   switch (message.session.latestPrompt) {
     case 'MEETING_NAME':
       setMeetingName(message);
-      return promptStartDate(message);
+      return promptStartDate(message.chat.id);
     case 'MEETING_DATE_START':
       // temp: should be promptEndDate.
-      return promptStartDate(message);
+      return promptStartDate(message.chat.id);
   }
 };
 
-export const promptMeetingName = async (message: SessionMessage<CreateSession>): Promise<void> => {
-  await reply(message, {
+export const promptMeetingName = async (chat_id: number): Promise<void> => {
+  await send({
+    chat_id,
     text: CREATE_PROMPTS.MEETING_NAME,
   });
 };
@@ -40,10 +42,18 @@ export const setMeetingName = async (message: SessionMessage<CreateSession>): Pr
   });
 };
 
-export const promptStartDate = async (message: SessionMessage<CreateSession>): Promise<void> => {
-  const month = dayjs(message.session.UI_DATE_PICKER_MONTH ?? dayjs().date(1).format('YYYYMMDD'));
-  renderCalendar(month, {
-    chat_id: message.chat.id,
+export const promptStartDate = async (chat_id: number): Promise<void> => {
+  const date = dayjs();
+  renderCalendar(date, {
+    chat_id,
     text: CREATE_PROMPTS.MEETING_DATE_START,
+  });
+};
+
+export const promptEndDate = async (chat_id: number): Promise<void> => {
+  const date = dayjs();
+  renderCalendar(date, {
+    chat_id,
+    text: CREATE_PROMPTS.MEETING_DATE_END,
   });
 };
