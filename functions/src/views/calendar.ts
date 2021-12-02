@@ -35,8 +35,9 @@ export const renderCalendar = async (
     return;
   }
   const monthButtons = getMonthButtons(date, { selectedDate });
+  const dayButtons = getDayButtons();
   const dateButtons = getDateButtons(date, { earliestDate, selectedDate });
-  const inline_keyboard = monthButtons.concat(dateButtons);
+  const inline_keyboard = monthButtons.concat(dayButtons, dateButtons);
   if (updateMessageId !== undefined) {
     edit({
       ...options,
@@ -73,6 +74,15 @@ const getMonthButtons = (
         callback_data: 'PAGE_' + date.add(1, 'month').format('YYYYMMDD'),
       },
     ],
+  ];
+};
+
+const getDayButtons = (): InlineKeyboardButton[][] => {
+  return [
+    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((label) => ({
+      text: label,
+      callback_data: 'NOOP',
+    })),
   ];
 };
 
