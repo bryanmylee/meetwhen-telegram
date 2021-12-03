@@ -16,6 +16,10 @@ const startCommand = async (update: BindSession<Update>): Promise<void> => {
 };
 
 export const handleUpdate = async (update: BindSession<Update>): Promise<void> => {
+  if (update.data.message?.text === '/reset') {
+    update.deleteSession();
+    return;
+  }
   const session = await update.getSession();
   if (session?.COMMAND === undefined) {
     return startCommand(update);
