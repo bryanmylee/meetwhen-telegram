@@ -26,6 +26,9 @@ export const onCreateMessage = async (message: CreateSessionMessage): Promise<vo
     case 'MEETING_TIME_START':
       await setStartTime(message);
       return promptEndTime(message.chat.id);
+    case 'MEETING_TIME_END':
+      await setEndTime(message);
+      return promptEndTime(message.chat.id);
   }
 };
 
@@ -49,5 +52,20 @@ export const setStartTime = async (message: CreateSessionMessage): Promise<void>
     ...message.session,
     startHour: hour,
     latestPrompt: 'MEETING_TIME_END',
+  });
+};
+
+export const setEndTime = async (message: CreateSessionMessage): Promise<void> => {
+  if (message.text === undefined) {
+    return;
+  }
+  const hour = parseHour(message.text);
+  if (hour === undefined) {
+    return;
+  }
+  await message.updateSession({
+    ...message.session,
+    endHour: hour,
+    latestPrompt: 'CONFIRM_OR_ADVANCED',
   });
 };
