@@ -45,16 +45,16 @@ export const promptEndDate = async (chat_id: number, startDate: Dayjs): Promise<
   );
 };
 
-export const promptStartTime = async (chat_id: number): Promise<void> => {
+export const promptStartHour = async (chat_id: number): Promise<void> => {
   send({
     chat_id,
-    text: CREATE_PROMPTS.MEETING_TIME_START,
+    text: CREATE_PROMPTS.MEETING_HOUR_START,
   });
 };
 
-export const promptEndTime = async (chat_id: number): Promise<void> => {
+export const promptEndHour = async (chat_id: number): Promise<void> => {
   send({
     chat_id,
-    text: CREATE_PROMPTS.MEETING_TIME_END,
+    text: CREATE_PROMPTS.MEETING_HOUR_END,
   });
 };

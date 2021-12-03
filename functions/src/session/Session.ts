@@ -1,6 +1,6 @@
 import type { Command } from '../command/Command';
 
 export interface Session<Prompt = string> {
-  command: Command;
+  command?: Command;
   latestPrompt: Prompt;
 }

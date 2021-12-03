@@ -16,7 +16,12 @@ export const subscribeSessionById = (
   return sessionRepo.doc(id).onSnapshot((doc) => onUpdate(doc.data() as Session));
 };
 
-export const updateSessionWithId = async (id: string, session: Session): Promise<void> => {
+export const updateSessionWithId = async (id: string, session: Partial<Session>): Promise<void> => {
+  const ref = sessionRepo.doc(id);
+  await ref.set(session, { merge: true });
+};
+
+export const setSessionWithId = async (id: string, session: Session): Promise<void> => {
   const ref = sessionRepo.doc(id);
   await ref.set(session);
 };
