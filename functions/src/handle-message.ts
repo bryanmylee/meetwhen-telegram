@@ -18,7 +18,7 @@ export const handleMessage = async (message: SessionMessage<string>): Promise<vo
     return startSession(message);
   }
   switch (message.session.command) {
-    case 'CREATE_MEET':
+    case 'new':
       return onCreateMessage(message as CreateSessionMessage);
   }
 };

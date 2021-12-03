@@ -7,7 +7,7 @@ import { CreateSessionMessage } from './CreateSessionMessage';
 
 export const startCreate = async (message: CreateSessionMessage): Promise<void> => {
   message.updateSession({
-    command: 'CREATE_MEET',
+    command: 'new',
     latestPrompt: 'MEETING_NAME',
   });
   await reply(message, {

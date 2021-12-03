@@ -8,7 +8,7 @@ import type { CallbackQuery, Message } from 'telegram-typings';
 import { handleCallback } from './handle-callback';
 import { handleMessage } from './handle-message';
 import { liveSession } from './session/SessionSubscriber';
-import { setCommands } from './set-commands';
+import { setCommands } from './command/set-commands';
 
 setCommands();
 

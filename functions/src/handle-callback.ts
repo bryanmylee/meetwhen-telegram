@@ -4,7 +4,7 @@ import { CreateSessionCallback } from './create/CreateSessionCallback';
 
 export const handleCallback = async (callback: SessionCallback<string>): Promise<void> => {
   switch (callback.session.command) {
-    case 'CREATE_MEET':
+    case 'new':
       return onCreateUpdate(callback as CreateSessionCallback);
   }
 };

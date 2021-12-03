@@ -1,1 +1,1 @@
-export type Command = 'CREATE_MEET';
+export type Command = 'new';
