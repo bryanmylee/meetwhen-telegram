@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import type { CreateSessionCallback } from './CreateSessionCallback';
 import { CREATE_PROMPTS } from './createPrompts';
 import { calendar } from '../views/calendar';
-import { promptEndDate } from './on-create-message';
+import { promptEndDate, promptStartTime } from './views/prompts';
 
 export const onCreateUpdate = async (callback: CreateSessionCallback): Promise<void> => {
   switch (callback.session.latestPrompt) {
@@ -94,7 +94,8 @@ export const updateEndDate = async (callback: CreateSessionCallback): Promise<vo
           selectedDate: dayjs(date),
         }
       );
-      return setEndDate(callback, date);
+      await setEndDate(callback, date);
+      return promptStartTime(callback.from.id);
   }
 };
 
