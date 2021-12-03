@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
+import type { Message } from 'telegram-typings';
 import { CREATE_PROMPTS } from '../createPrompts';
 import { calendar } from '../../views/calendar';
 import { sendMessage } from '../../utils/sendMessage';
@@ -45,15 +46,15 @@ export const promptEndDate = async (chat_id: number, startDate: Dayjs): Promise<
   );
 };
 
-export const promptStartHour = async (chat_id: number): Promise<void> => {
-  sendMessage({
+export const promptStartHour = async (chat_id: number): Promise<Message> => {
+  return sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_HOUR_START + '\n`\\[12am-11pm\\]`',
   });
 };
 
-export const promptEndHour = async (chat_id: number): Promise<void> => {
-  sendMessage({
+export const promptEndHour = async (chat_id: number): Promise<Message> => {
+  return sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_HOUR_END + '\n`\\[1am-12am\\]`',
   });

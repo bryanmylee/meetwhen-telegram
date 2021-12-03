@@ -1,12 +1,12 @@
+import dayjs from 'dayjs';
 import type { BindSession } from '../session/BindSession';
 import type { CreateSession } from './CreateSession';
 import type { Update } from 'telegram-typings';
-import { promptEndDate, promptEndHour, promptStartDate, promptStartHour } from './views/prompts';
-import { calendar, getCalendarPayload } from '../views/calendar';
 import { CREATE_PROMPTS } from './createPrompts';
-import dayjs from 'dayjs';
+import { calendar, getCalendarPayload } from '../views/calendar';
+import { editMessage } from '../utils/editMessage';
 import { parseHour } from '../utils/parseHour';
-// import { editMessage } from '../utils/editMessage';
+import { promptEndDate, promptEndHour, promptStartDate, promptStartHour } from './views/prompts';
 
 type CreateUpdateHandler = (update: BindSession<Update, CreateSession>) => Promise<void>;
 
@@ -122,7 +122,8 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update) => {
         }
       );
       return;
-    case 'SELECT':
+    case 'SELECT': {
+      const startHourPrompt = await promptStartHour(callback_query.from.id);
       await Promise.all([
         calendar(
           date,
@@ -135,13 +136,13 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update) => {
             selectedDate: date,
           }
         ),
-        promptStartHour(callback_query.from.id),
         update.updateSession({
           endDate: dateString,
           LATEST_PROMPT: 'MEETING_HOUR_START',
+          MESSAGE_ID_TO_EDIT: startHourPrompt.message_id,
         }),
       ]);
-      return;
+    }
   }
 };
 
@@ -156,18 +157,19 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update) => {
       message: `I don't understand ${message.text}. Try again?`,
     };
   }
-  console.log('handling', update);
-  await Promise.all([
-    // editMessage({
-    //   text: CREATE_PROMPTS.MEETING_HOUR_START + `\n\`${message.text}\``,
-    //   message_id: message.from.id
-    // }),
-    promptEndHour(message.chat.id),
-    update.updateSession({
-      startHour: hour,
-      LATEST_PROMPT: 'MEETING_HOUR_END',
-    }),
-  ]);
+  const session = await update.getSession();
+  const startHourPromptMessageId = session.MESSAGE_ID_TO_EDIT;
+  await editMessage({
+    text: CREATE_PROMPTS.MEETING_HOUR_START + `\n\`${message.text}\``,
+    chat_id: message.chat.id,
+    message_id: startHourPromptMessageId,
+  });
+  const endHourPrompt = await promptEndHour(message.chat.id);
+  await update.updateSession({
+    startHour: hour,
+    LATEST_PROMPT: 'MEETING_HOUR_END',
+    MESSAGE_ID_TO_EDIT: endHourPrompt.message_id,
+  });
 };
 
 export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
@@ -181,13 +183,17 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
       message: `I don't understand ${message.text}. Try again?`,
     };
   }
-  await Promise.all([
-    promptEndHour(message.chat.id),
-    update.updateSession({
-      endHour: hour,
-      LATEST_PROMPT: 'CONFIRM_OR_ADVANCED',
-    }),
-  ]);
+  const session = await update.getSession();
+  const endHourPromptMessageId = session.MESSAGE_ID_TO_EDIT;
+  await editMessage({
+    text: CREATE_PROMPTS.MEETING_HOUR_END + `\n\`${message.text}\``,
+    chat_id: message.chat.id,
+    message_id: endHourPromptMessageId,
+  });
+  await update.updateSession({
+    endHour: hour,
+    LATEST_PROMPT: 'CONFIRM_OR_ADVANCED',
+  });
 };
 
 export const handleConfirmOrMoreUpdate: CreateUpdateHandler = async (update) => {

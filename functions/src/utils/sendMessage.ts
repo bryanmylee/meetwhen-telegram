@@ -9,7 +9,7 @@ export const sendMessage = async (options: SendMessage): Promise<Message> => {
       ...options,
     });
     console.log('->', response.data);
-    return response.data as Message;
+    return response.data.result as Message;
   } catch (error) {
     console.error(error);
     throw error;
