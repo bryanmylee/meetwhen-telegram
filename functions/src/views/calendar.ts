@@ -16,7 +16,7 @@ export const calendar = async (
   { updateMessageId, earliestDate, selectedDate }: RenderOptions = {}
 ): Promise<void> => {
   const withSelectedText =
-    text + (selectedDate !== undefined ? ` \`\\[${selectedDate.format('D MMM YYYY')}\\]\`` : '');
+    text + (selectedDate !== undefined ? `\n\`${selectedDate.format('D MMM YYYY')}\`` : '');
   if (selectedDate !== undefined) {
     if (updateMessageId !== undefined) {
       await edit({
