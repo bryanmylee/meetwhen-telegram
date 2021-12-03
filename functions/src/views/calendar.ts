@@ -10,7 +10,7 @@ export interface RenderOptions {
   selectedDate?: Dayjs;
 }
 
-export const renderCalendar = async (
+export const calendar = async (
   date: Dayjs,
   { text, ...options }: SendMessage,
   { updateMessageId, earliestDate, selectedDate }: RenderOptions = {}

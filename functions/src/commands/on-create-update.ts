@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { CreateSession, CREATE_PROMPTS } from '../types/CreateSession';
 import { SessionCallback } from '../types/SessionCallback';
-import { renderCalendar } from '../views/calendar';
+import { calendar } from '../views/calendar';
 import { promptEndDate } from './on-create-message';
 
 export const onCreateUpdate = async (callback: SessionCallback<CreateSession>): Promise<void> => {
@@ -23,7 +23,7 @@ export const updateStartDate = async (callback: SessionCallback<CreateSession>):
   const [, action, date] = data.match(/(\w+)_(\w+)/)!;
   switch (action) {
     case 'PAGE':
-      return renderCalendar(
+      return calendar(
         dayjs(date),
         {
           chat_id: callback.from.id,
@@ -35,7 +35,7 @@ export const updateStartDate = async (callback: SessionCallback<CreateSession>):
         }
       );
     case 'SELECT':
-      await renderCalendar(
+      await calendar(
         dayjs(date),
         {
           chat_id: callback.from.id,
@@ -71,7 +71,7 @@ export const updateEndDate = async (callback: SessionCallback<CreateSession>): P
   const [, action, date] = data.match(/(\w+)_(\w+)/)!;
   switch (action) {
     case 'PAGE':
-      return renderCalendar(
+      return calendar(
         dayjs(date),
         {
           chat_id: callback.from.id,
@@ -83,7 +83,7 @@ export const updateEndDate = async (callback: SessionCallback<CreateSession>): P
         }
       );
     case 'SELECT':
-      await renderCalendar(
+      await calendar(
         dayjs(date),
         {
           chat_id: callback.from.id,
