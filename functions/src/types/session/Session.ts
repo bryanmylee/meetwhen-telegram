@@ -1,6 +1,6 @@
-import { CommandType } from './CommandType';
+import { Command } from '../Command';
 
 export interface Session<Prompt = string> {
-  command: CommandType;
+  command: Command;
   latestPrompt: Prompt;
 }
