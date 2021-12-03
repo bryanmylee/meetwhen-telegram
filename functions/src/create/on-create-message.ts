@@ -1,9 +1,10 @@
-import dayjs, { Dayjs } from 'dayjs';
-import { CREATE_PROMPTS } from './CreateSession';
+import dayjs from 'dayjs';
+import type { CreateSessionMessage } from './CreateSessionMessage';
+import type { Dayjs } from 'dayjs';
+import { CREATE_PROMPTS } from './createPrompts';
 import { calendar } from '../views/calendar';
 import { reply } from '../utils/reply';
 import { send } from '../utils/send';
-import { CreateSessionMessage } from './CreateSessionMessage';
 
 export const startCreate = async (message: CreateSessionMessage): Promise<void> => {
   message.updateSession({

@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
-import { CREATE_PROMPTS } from './CreateSession';
+import type { CreateSessionCallback } from './CreateSessionCallback';
+import { CREATE_PROMPTS } from './createPrompts';
 import { calendar } from '../views/calendar';
 import { promptEndDate } from './on-create-message';
-import { CreateSessionCallback } from './CreateSessionCallback';
 
 export const onCreateUpdate = async (callback: CreateSessionCallback): Promise<void> => {
   switch (callback.session.latestPrompt) {

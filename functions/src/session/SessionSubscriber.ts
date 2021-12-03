@@ -1,5 +1,5 @@
+import type { Session } from './Session';
 import { findSessionById, subscribeSessionById, updateSessionWithId } from './repo';
-import { Session } from './Session';
 
 export interface SessionSubscriber<T extends Session = Session> {
   session: T;

@@ -1,5 +1,5 @@
 import type { Dayjs } from 'dayjs';
-import { InlineKeyboardButton, SendMessage } from 'telegram-typings';
+import type { InlineKeyboardButton, SendMessage } from 'telegram-typings';
 import { edit } from '../utils/edit';
 import { range } from '../utils/range';
 import { send } from '../utils/send';

@@ -1,7 +1,7 @@
+import type { CreateSessionMessage } from './create/CreateSessionMessage';
+import type { SessionMessage } from './session/SessionMessage';
 import { startCreate, onCreateMessage } from './create/on-create-message';
 import { unrecognized } from './command/unrecognized';
-import { SessionMessage } from './session/SessionMessage';
-import { CreateSessionMessage } from './create/CreateSessionMessage';
 
 const startSession = async (message: SessionMessage<string>): Promise<void> => {
   switch (message.text) {

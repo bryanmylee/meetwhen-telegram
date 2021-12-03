@@ -1,6 +1,6 @@
-import { CallbackQuery } from 'telegram-typings';
-import { SessionSubscriber } from './SessionSubscriber';
-import { Session } from './Session';
+import type { CallbackQuery } from 'telegram-typings';
+import type { Session } from './Session';
+import type { SessionSubscriber } from './SessionSubscriber';
 
 export interface SessionCallback<
   Prompt extends string,

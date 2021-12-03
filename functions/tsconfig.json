@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "module": "commonjs",
     "esModuleInterop": true,
     "noImplicitReturns": true,
@@ -8,7 +7,8 @@
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017"
+    "target": "es2017",
+    "importsNotUsedAsValues": "error"
   },
   "compileOnSave": true,
   "include": ["src"]

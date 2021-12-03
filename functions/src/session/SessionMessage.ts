@@ -1,6 +1,6 @@
-import { Message } from 'telegram-typings';
-import { SessionSubscriber } from './SessionSubscriber';
-import { Session } from './Session';
+import type { Message } from 'telegram-typings';
+import type { Session } from './Session';
+import type { SessionSubscriber } from './SessionSubscriber';
 
 export interface SessionMessage<
   Prompt extends string,

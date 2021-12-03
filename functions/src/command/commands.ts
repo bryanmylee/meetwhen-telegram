@@ -1,5 +1,5 @@
 import type { BotCommand } from 'telegram-typings';
-import { Command } from './Command';
+import type { Command } from './Command';
 
 interface MyBotCommand extends BotCommand {
   command: Command;
