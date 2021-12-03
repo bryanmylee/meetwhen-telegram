@@ -8,5 +8,8 @@ export const parseHour = (str: string): number | undefined => {
   if (hour > 12) {
     return undefined;
   }
+  if (hour === 12) {
+    return amPm === 'am' ? 0 : 12;
+  }
   return amPm === 'pm' ? hour + 12 : hour;
 };
