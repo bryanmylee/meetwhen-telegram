@@ -48,13 +48,13 @@ export const promptEndDate = async (chat_id: number, startDate: Dayjs): Promise<
 export const promptStartHour = async (chat_id: number): Promise<void> => {
   sendMessage({
     chat_id,
-    text: CREATE_PROMPTS.MEETING_HOUR_START,
+    text: CREATE_PROMPTS.MEETING_HOUR_START + '\n`\\[12am-11pm\\]`',
   });
 };
 
 export const promptEndHour = async (chat_id: number): Promise<void> => {
   sendMessage({
     chat_id,
-    text: CREATE_PROMPTS.MEETING_HOUR_END,
+    text: CREATE_PROMPTS.MEETING_HOUR_END + '\n`\\[1am-12am\\]`',
   });
 };

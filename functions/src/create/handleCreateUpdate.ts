@@ -6,13 +6,14 @@ import { calendar, getCalendarPayload } from '../views/calendar';
 import { CREATE_PROMPTS } from './createPrompts';
 import dayjs from 'dayjs';
 import { parseHour } from '../utils/parseHour';
+// import { editMessage } from '../utils/editMessage';
 
 type CreateUpdateHandler = (update: BindSession<Update, CreateSession>) => Promise<void>;
 
 export const handleCreateUpdate: CreateUpdateHandler = async (update) => {
   const session = await update.getSession();
-  const { latestPrompt } = session;
-  switch (latestPrompt) {
+  const { LATEST_PROMPT } = session;
+  switch (LATEST_PROMPT) {
     case 'MEETING_NAME':
       return handleNameUpdate(update);
     case 'MEETING_DATE_START':
@@ -43,7 +44,7 @@ export const handleNameUpdate: CreateUpdateHandler = async (update) => {
     promptStartDate(message.chat.id),
     update.updateSession({
       name,
-      latestPrompt: 'MEETING_DATE_START',
+      LATEST_PROMPT: 'MEETING_DATE_START',
     }),
   ]);
 };
@@ -89,7 +90,7 @@ export const handleStartDateUpdate: CreateUpdateHandler = async (update) => {
         promptEndDate(callback_query.from.id, date),
         update.updateSession({
           startDate: dateString,
-          latestPrompt: 'MEETING_DATE_END',
+          LATEST_PROMPT: 'MEETING_DATE_END',
         }),
       ]);
       return;
@@ -137,7 +138,7 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update) => {
         promptStartHour(callback_query.from.id),
         update.updateSession({
           endDate: dateString,
-          latestPrompt: 'MEETING_HOUR_START',
+          LATEST_PROMPT: 'MEETING_HOUR_START',
         }),
       ]);
       return;
@@ -155,11 +156,16 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update) => {
       message: `I don't understand ${message.text}. Try again?`,
     };
   }
+  console.log('handling', update);
   await Promise.all([
+    // editMessage({
+    //   text: CREATE_PROMPTS.MEETING_HOUR_START + `\n\`${message.text}\``,
+    //   message_id: message.from.id
+    // }),
     promptEndHour(message.chat.id),
     update.updateSession({
       startHour: hour,
-      latestPrompt: 'MEETING_HOUR_END',
+      LATEST_PROMPT: 'MEETING_HOUR_END',
     }),
   ]);
 };
@@ -179,7 +185,7 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
     promptEndHour(message.chat.id),
     update.updateSession({
       endHour: hour,
-      latestPrompt: 'CONFIRM_OR_ADVANCED',
+      LATEST_PROMPT: 'CONFIRM_OR_ADVANCED',
     }),
   ]);
 };
