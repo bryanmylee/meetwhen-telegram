@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
-import { Session } from '../types/Session';
-import { BindSession } from '../types/BindSession';
+import { Session } from '../types/session/Session';
+import { BindSession } from '../types/session/BindSession';
 
 const sessionRepo = admin.firestore().collection('session');
 

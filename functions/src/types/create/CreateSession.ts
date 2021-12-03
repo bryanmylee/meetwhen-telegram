@@ -1,4 +1,4 @@
-import { Session } from './Session';
+import { Session } from '../session/Session';
 
 export const CREATE_PROMPTS = {
   MEETING_NAME: 'Send me the name of your meet\\.',
