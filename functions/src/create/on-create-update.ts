@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import { CreateSession, CREATE_PROMPTS } from '../create/CreateSession';
-import { SessionCallback } from '../session/SessionCallback';
+import { CREATE_PROMPTS } from './CreateSession';
 import { calendar } from '../views/calendar';
 import { promptEndDate } from './on-create-message';
+import { CreateSessionCallback } from './CreateSessionCallback';
 
-export const onCreateUpdate = async (callback: SessionCallback<CreateSession>): Promise<void> => {
+export const onCreateUpdate = async (callback: CreateSessionCallback): Promise<void> => {
   switch (callback.session.latestPrompt) {
     case 'MEETING_DATE_START':
       return updateStartDate(callback);
@@ -14,7 +14,7 @@ export const onCreateUpdate = async (callback: SessionCallback<CreateSession>): 
   }
 };
 
-export const updateStartDate = async (callback: SessionCallback<CreateSession>): Promise<void> => {
+export const updateStartDate = async (callback: CreateSessionCallback): Promise<void> => {
   const data = callback.data;
   if (data === undefined) {
     return;
@@ -52,7 +52,7 @@ export const updateStartDate = async (callback: SessionCallback<CreateSession>):
 };
 
 export const setStartDate = async (
-  callback: SessionCallback<CreateSession>,
+  callback: CreateSessionCallback,
   date: string
 ): Promise<void> => {
   callback.updateSession({
@@ -62,7 +62,7 @@ export const setStartDate = async (
   });
 };
 
-export const updateEndDate = async (callback: SessionCallback<CreateSession>): Promise<void> => {
+export const updateEndDate = async (callback: CreateSessionCallback): Promise<void> => {
   const data = callback.data;
   if (data === undefined) {
     return;
@@ -98,10 +98,7 @@ export const updateEndDate = async (callback: SessionCallback<CreateSession>): P
   }
 };
 
-export const setEndDate = async (
-  callback: SessionCallback<CreateSession>,
-  date: string
-): Promise<void> => {
+export const setEndDate = async (callback: CreateSessionCallback, date: string): Promise<void> => {
   callback.updateSession({
     ...callback.session,
     endDate: date,

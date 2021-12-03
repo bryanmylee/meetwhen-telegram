@@ -1,13 +1,13 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { CreateSession, CREATE_PROMPTS } from '../create/CreateSession';
-import { SessionMessage } from '../session/SessionMessage';
+import { CREATE_PROMPTS } from './CreateSession';
 import { calendar } from '../views/calendar';
 import { reply } from '../utils/reply';
 import { send } from '../utils/send';
+import { CreateSessionMessage } from './CreateSessionMessage';
 
-export const startCreate = async (message: SessionMessage<CreateSession>): Promise<void> => {
+export const startCreate = async (message: CreateSessionMessage): Promise<void> => {
   message.updateSession({
-    command: 'create',
+    command: 'CREATE_MEET',
     latestPrompt: 'MEETING_NAME',
   });
   await reply(message, {
@@ -16,7 +16,7 @@ export const startCreate = async (message: SessionMessage<CreateSession>): Promi
   promptMeetingName(message.chat.id);
 };
 
-export const onCreateMessage = async (message: SessionMessage<CreateSession>): Promise<void> => {
+export const onCreateMessage = async (message: CreateSessionMessage): Promise<void> => {
   switch (message.session.latestPrompt) {
     case 'MEETING_NAME':
       setMeetingName(message);
@@ -34,7 +34,7 @@ export const promptMeetingName = async (chat_id: number): Promise<void> => {
   });
 };
 
-export const setMeetingName = async (message: SessionMessage<CreateSession>): Promise<void> => {
+export const setMeetingName = async (message: CreateSessionMessage): Promise<void> => {
   message.updateSession({
     ...message.session,
     meetingName: message.text,

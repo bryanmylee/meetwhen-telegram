@@ -1,4 +1,4 @@
-import { Command } from '../commands/Command';
+import { Command } from '../command/Command';
 
 export interface Session<Prompt = string> {
   command: Command;
