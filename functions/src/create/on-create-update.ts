@@ -7,23 +7,28 @@ import { promptEndDate, promptStartTime } from './views/prompts';
 export const onCreateUpdate = async (callback: CreateSessionCallback): Promise<void> => {
   switch (callback.session.latestPrompt) {
     case 'MEETING_DATE_START':
-      return updateStartDate(callback);
+      if (await updateStartDate(callback)) {
+        return promptEndDate(callback.from.id, dayjs(callback.session.startDate));
+      }
+      return;
     case 'MEETING_DATE_END':
-    case 'MEETING_TIME_START':
-      await updateEndDate(callback);
+      if (await updateEndDate(callback)) {
+        return promptStartTime(callback.from.id);
+      }
+      return;
   }
 };
 
-export const updateStartDate = async (callback: CreateSessionCallback): Promise<void> => {
+export const updateStartDate = async (callback: CreateSessionCallback): Promise<boolean> => {
   const data = callback.data;
   if (data === undefined) {
-    return;
+    return false;
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [, action, date] = data.match(/(\w+)_(\w+)/)!;
   switch (action) {
     case 'PAGE':
-      return calendar(
+      await calendar(
         dayjs(date),
         {
           chat_id: callback.from.id,
@@ -34,6 +39,7 @@ export const updateStartDate = async (callback: CreateSessionCallback): Promise<
           earliestDate: dayjs(),
         }
       );
+      return false;
     case 'SELECT':
       await calendar(
         dayjs(date),
@@ -47,7 +53,9 @@ export const updateStartDate = async (callback: CreateSessionCallback): Promise<
         }
       );
       await setStartDate(callback, date);
-      return promptEndDate(callback.from.id, dayjs(date));
+      return true;
+    default:
+      return false;
   }
 };
 
@@ -62,16 +70,16 @@ export const setStartDate = async (
   });
 };
 
-export const updateEndDate = async (callback: CreateSessionCallback): Promise<void> => {
+export const updateEndDate = async (callback: CreateSessionCallback): Promise<boolean> => {
   const data = callback.data;
   if (data === undefined) {
-    return;
+    return false;
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const [, action, date] = data.match(/(\w+)_(\w+)/)!;
   switch (action) {
     case 'PAGE':
-      return calendar(
+      await calendar(
         dayjs(date),
         {
           chat_id: callback.from.id,
@@ -82,6 +90,7 @@ export const updateEndDate = async (callback: CreateSessionCallback): Promise<vo
           earliestDate: dayjs(callback.session.startDate, 'YYYYMMDD'),
         }
       );
+      return false;
     case 'SELECT':
       await calendar(
         dayjs(date),
@@ -95,7 +104,9 @@ export const updateEndDate = async (callback: CreateSessionCallback): Promise<vo
         }
       );
       await setEndDate(callback, date);
-      return promptStartTime(callback.from.id);
+      return true;
+    default:
+      return false;
   }
 };
 

@@ -1,5 +1,11 @@
+import { parseHour } from '../utils/parseHour';
 import type { CreateSessionMessage } from './CreateSessionMessage';
-import { promptMeetingName, promptStartCreate, promptStartDate } from './views/prompts';
+import {
+  promptEndTime,
+  promptMeetingName,
+  promptStartCreate,
+  promptStartDate,
+} from './views/prompts';
 
 export const startCreate = async (message: CreateSessionMessage): Promise<void> => {
   message.updateSession({
@@ -17,6 +23,9 @@ export const onCreateMessage = async (message: CreateSessionMessage): Promise<vo
       return promptStartDate(message.chat.id);
     case 'MEETING_DATE_START':
       return promptStartDate(message.chat.id);
+    case 'MEETING_TIME_START':
+      await setStartTime(message);
+      return promptEndTime(message.chat.id);
   }
 };
 
@@ -25,5 +34,20 @@ export const setMeetingName = async (message: CreateSessionMessage): Promise<voi
     ...message.session,
     meetingName: message.text,
     latestPrompt: 'MEETING_DATE_START',
+  });
+};
+
+export const setStartTime = async (message: CreateSessionMessage): Promise<void> => {
+  if (message.text === undefined) {
+    return;
+  }
+  const hour = parseHour(message.text);
+  if (hour === undefined) {
+    return;
+  }
+  await message.updateSession({
+    ...message.session,
+    startHour: hour,
+    latestPrompt: 'MEETING_TIME_END',
   });
 };

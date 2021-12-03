@@ -5,6 +5,6 @@ export interface CreateSession extends Session<CreatePrompt> {
   meetingName?: string;
   startDate?: string;
   endDate?: string;
-  startHour?: string;
-  endHour?: string;
+  startHour?: number;
+  endHour?: number;
 }

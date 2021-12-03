@@ -51,3 +51,10 @@ export const promptStartTime = async (chat_id: number): Promise<void> => {
     text: CREATE_PROMPTS.MEETING_TIME_START,
   });
 };
+
+export const promptEndTime = async (chat_id: number): Promise<void> => {
+  send({
+    chat_id,
+    text: CREATE_PROMPTS.MEETING_TIME_END,
+  });
+};
