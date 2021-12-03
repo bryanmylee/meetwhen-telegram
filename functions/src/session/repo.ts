@@ -25,3 +25,8 @@ export const setSessionWithId = async (id: string, session: Session): Promise<vo
   const ref = sessionRepo.doc(id);
   await ref.set(session);
 };
+
+export const deleteSessionWithId = async (id: string): Promise<void> => {
+  const ref = sessionRepo.doc(id);
+  await ref.delete();
+};

@@ -1,1 +1,1 @@
-export type Command = 'new';
+export type Command = 'new' | 'reset';

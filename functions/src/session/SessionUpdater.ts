@@ -1,5 +1,10 @@
 import type { Session } from './Session';
-import { findSessionById, setSessionWithId, updateSessionWithId } from './repo';
+import {
+  deleteSessionWithId,
+  findSessionById,
+  setSessionWithId,
+  updateSessionWithId,
+} from './repo';
 
 export class SessionUpdater<T extends Session = Session> {
   private _session: T | undefined;
@@ -18,5 +23,9 @@ export class SessionUpdater<T extends Session = Session> {
 
   public async setSession(newSession: T): Promise<void> {
     await setSessionWithId(this.id, newSession);
+  }
+
+  public async deleteSession(): Promise<void> {
+    await deleteSessionWithId(this.id);
   }
 }

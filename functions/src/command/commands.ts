@@ -10,4 +10,8 @@ export const COMMANDS: MyBotCommand[] = [
     command: 'new',
     description: 'Create a new meet',
   },
+  {
+    command: 'reset',
+    description: 'Start over',
+  },
 ];
