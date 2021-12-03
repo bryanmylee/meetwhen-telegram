@@ -164,7 +164,8 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update) => {
     chat_id: message.chat.id,
     message_id: startHourPromptMessageId,
   });
-  const endHourPrompt = await promptEndHour(message.chat.id);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const endHourPrompt = await promptEndHour(message.chat.id, hour);
   await update.updateSession({
     startHour: hour,
     LATEST_PROMPT: 'MEETING_HOUR_END',

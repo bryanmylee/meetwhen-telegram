@@ -53,9 +53,25 @@ export const promptStartHour = async (chat_id: number): Promise<Message> => {
   });
 };
 
-export const promptEndHour = async (chat_id: number): Promise<Message> => {
+export const promptEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
+  const getHourLabel = (hour: number) => {
+    if (hour === 0 || hour === 24) {
+      return '12am';
+    }
+    if (hour === 12) {
+      return '12pm';
+    }
+    if (hour > 12) {
+      return `${hour - 12}pm`;
+    }
+    return `${hour}am`;
+  };
+  const earliestHour = startHour + 1;
+  const latestHour = startHour;
   return sendMessage({
     chat_id,
-    text: CREATE_PROMPTS.MEETING_HOUR_END + '\n`\\[1am-12am\\]`',
+    text:
+      CREATE_PROMPTS.MEETING_HOUR_END +
+      `\n\`\\[${getHourLabel(earliestHour)}-${getHourLabel(latestHour)}\\]\``,
   });
 };
