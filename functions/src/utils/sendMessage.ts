@@ -1,10 +1,10 @@
 import axios from 'axios';
-import type { Message, EditMessageText } from 'telegram-typings';
+import type { SendMessage, Message } from 'telegram-typings';
 import { TELEGRAM_API } from '../env';
 
-export const edit = async (options: EditMessageText): Promise<Message> => {
+export const sendMessage = async (options: SendMessage): Promise<Message> => {
   try {
-    const response = await axios.post(TELEGRAM_API + '/editMessageText', {
+    const response = await axios.post(TELEGRAM_API + '/sendMessage', {
       parse_mode: 'MarkdownV2',
       ...options,
     });

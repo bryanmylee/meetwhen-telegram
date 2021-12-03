@@ -1,8 +1,8 @@
 import type { Dayjs } from 'dayjs';
 import type { InlineKeyboardButton, SendMessage } from 'telegram-typings';
-import { edit } from '../utils/edit';
+import { editMessage } from '../utils/editMessage';
 import { range } from '../utils/range';
-import { send } from '../utils/send';
+import { sendMessage } from '../utils/sendMessage';
 
 export interface RenderOptions {
   updateMessageId?: number;
@@ -41,14 +41,14 @@ export const calendar = async (
     text + (selectedDate !== undefined ? `\n\`${selectedDate.format('D MMM YYYY')}\`` : '');
   if (selectedDate !== undefined) {
     if (updateMessageId !== undefined) {
-      await edit({
+      await editMessage({
         ...options,
         text: withSelectedText,
         message_id: updateMessageId,
         reply_markup: undefined,
       });
     } else {
-      await send({
+      await sendMessage({
         ...options,
         text: withSelectedText,
         reply_markup: undefined,
@@ -61,14 +61,14 @@ export const calendar = async (
   const dateButtons = getDateButtons(date, { earliestDate, selectedDate });
   const inline_keyboard = monthButtons.concat(dayButtons, dateButtons);
   if (updateMessageId !== undefined) {
-    edit({
+    editMessage({
       ...options,
       text: withSelectedText,
       message_id: updateMessageId,
       reply_markup: { inline_keyboard },
     });
   } else {
-    send({
+    sendMessage({
       ...options,
       text: withSelectedText,
       reply_markup: { inline_keyboard },

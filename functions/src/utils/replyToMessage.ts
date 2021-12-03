@@ -1,11 +1,11 @@
 import type { SendMessage, Message } from 'telegram-typings';
-import { send } from './send';
+import { sendMessage } from './sendMessage';
 
-export const reply = async (
+export const replyToMessage = async (
   to: Message,
   options: Omit<SendMessage, 'chat_id' | 'parse_mode'>
 ): Promise<Message> => {
-  return send({
+  return sendMessage({
     ...options,
     chat_id: to.chat.id,
   });

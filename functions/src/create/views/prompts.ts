@@ -2,17 +2,17 @@ import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { CREATE_PROMPTS } from '../createPrompts';
 import { calendar } from '../../views/calendar';
-import { send } from '../../utils/send';
+import { sendMessage } from '../../utils/sendMessage';
 
 export const promptStartCreate = async (chat_id: number): Promise<void> => {
-  await send({
+  await sendMessage({
     chat_id,
     text: '*Creating a new meet\\!*',
   });
 };
 
 export const promptMeetingName = async (chat_id: number): Promise<void> => {
-  await send({
+  await sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_NAME,
   });
@@ -46,14 +46,14 @@ export const promptEndDate = async (chat_id: number, startDate: Dayjs): Promise<
 };
 
 export const promptStartHour = async (chat_id: number): Promise<void> => {
-  send({
+  sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_HOUR_START,
   });
 };
 
 export const promptEndHour = async (chat_id: number): Promise<void> => {
-  send({
+  sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_HOUR_END,
   });
