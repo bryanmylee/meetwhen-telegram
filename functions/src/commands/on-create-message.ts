@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { CreateSession, CREATE_PROMPTS } from '../types/create/CreateSession';
-import { SessionMessage } from '../types/session/SessionMessage';
+import { CreateSession, CREATE_PROMPTS } from '../create/CreateSession';
+import { SessionMessage } from '../session/SessionMessage';
 import { calendar } from '../views/calendar';
 import { reply } from '../utils/reply';
 import { send } from '../utils/send';

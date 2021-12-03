@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-import { CreateSession, CREATE_PROMPTS } from '../types/create/CreateSession';
-import { SessionCallback } from '../types/session/SessionCallback';
+import { CreateSession, CREATE_PROMPTS } from '../create/CreateSession';
+import { SessionCallback } from '../session/SessionCallback';
 import { calendar } from '../views/calendar';
 import { promptEndDate } from './on-create-message';
 

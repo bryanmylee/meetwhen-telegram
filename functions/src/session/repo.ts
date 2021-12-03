@@ -1,6 +1,5 @@
 import * as admin from 'firebase-admin';
-import { Session } from '../types/session/Session';
-import { BindSession } from '../types/session/BindSession';
+import { Session } from './Session';
 
 const sessionRepo = admin.firestore().collection('session');
 
@@ -10,17 +9,14 @@ export const findSessionById = async (id: string): Promise<Session> => {
   return data;
 };
 
+export const subscribeSessionById = (
+  id: string,
+  onUpdate: (data: Session) => void
+): (() => void) => {
+  return sessionRepo.doc(id).onSnapshot((doc) => onUpdate(doc.data() as Session));
+};
+
 export const updateSessionWithId = async (id: string, session: Session): Promise<void> => {
   const ref = sessionRepo.doc(id);
   await ref.set(session);
-};
-
-export const bindSession = async <T extends Session = Session>(
-  id: string
-): Promise<BindSession<T>> => {
-  const session = (await findSessionById(id)) as T;
-  return {
-    session,
-    updateSession: (newSession: T) => updateSessionWithId(id, newSession),
-  };
 };
