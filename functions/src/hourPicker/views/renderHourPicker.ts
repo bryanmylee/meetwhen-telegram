@@ -54,7 +54,10 @@ export const renderHourPicker = async (
 };
 
 export const getAmPmToggle = (hour: number): InlineKeyboardButton[][] => {
-  if (hour < 12 || hour === 24) {
+  if (hour === 0 || hour === 24) {
+    return [[{ text: 'am / pm', callback_data: 'PAGE_12pm' }]];
+  }
+  if (hour < 12) {
     return [[{ text: 'am / pm', callback_data: `PAGE_${hour}pm` }]];
   }
   return [[{ text: 'am / pm', callback_data: `PAGE_${hour}am` }]];
