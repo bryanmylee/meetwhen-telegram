@@ -6,21 +6,19 @@ import { sendMessage } from '../../utils/sendMessage';
 
 export interface RenderOptions {
   updateMessageId?: number;
-  selectedHour?: number;
+  select?: boolean;
 }
 
 export const renderHourPicker = async (
   hour: number,
   { text, ...options }: SendMessage,
-  { updateMessageId, selectedHour }: RenderOptions = {}
+  { updateMessageId, select = false }: RenderOptions = {}
 ): Promise<Message> => {
   const startHourLabel = formatHour(hour);
   const textLabel =
     text +
-    (selectedHour !== undefined
-      ? `\n\`${formatHour(selectedHour)}\``
-      : `\n\`\\[${startHourLabel}-${startHourLabel}\\]\``);
-  if (selectedHour !== undefined) {
+    (select ? `\n\`${formatHour(hour)}\`` : `\n\`\\[${startHourLabel}-${startHourLabel}\\]\``);
+  if (select) {
     if (updateMessageId !== undefined) {
       return editMessage({
         ...options,

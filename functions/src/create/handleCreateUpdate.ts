@@ -4,8 +4,10 @@ import type { ConfirmAction } from './ConfirmAction';
 import type { CreateSession } from './CreateSession';
 import type { Update } from 'telegram-typings';
 import { CREATE_PROMPTS } from './createPrompts';
-import { editMessage } from '../utils/editMessage';
-import { parseHour } from '../utils/parseHour';
+import { confirmCreate } from './confirmCreate';
+import { deleteMessage } from '../utils/deleteMessage';
+import { handleCalendarUpdate } from '../calendar/handleCalendarUpdate';
+import { handleHourPickerUpdate } from '../hourPicker/handleHourPickerUpdate';
 import { renderCalendar } from '../calendar/views/renderCalendar';
 import {
   renderCancel,
@@ -17,9 +19,7 @@ import {
   renderSetStartDate,
   renderSetStartHour,
 } from './views/renderCreate';
-import { handleCalendarUpdate } from '../calendar/handleCalendarUpdate';
-import { deleteMessage } from '../utils/deleteMessage';
-import { confirmCreate } from './confirmCreate';
+import { renderHourPicker } from '../hourPicker/views/renderHourPicker';
 
 type CreateUpdateHandler = (
   update: BindSession<Update, CreateSession>,
@@ -164,22 +164,23 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
 };
 
 export const handleStartHourUpdate: CreateUpdateHandler = async (update, edit = false) => {
-  const { message } = update.data;
-  if (message === undefined) {
+  const { message, callback_query } = update.data;
+  if (message === undefined && callback_query === undefined) {
     return;
   }
-  const hour = parseHour(message.text ?? '');
+  const { action, hour, hourString } = handleHourPickerUpdate(update);
   if (hour === undefined) {
-    throw new Error(`I don't understand ${message.text}\\. Try again?`);
+    throw new Error(`I don't understand ${hourString}\\. Try again?`);
   }
-  const chatId = message.chat.id;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const chatId = (message?.chat.id ?? callback_query?.from.id)!;
   const session = await update.getSession();
-  const startHourPromptMessageId = session.MESSAGE_ID_TO_EDIT;
-  await editMessage({
-    text: CREATE_PROMPTS.MEETING_HOUR_START + `\n\`${message.text}\``,
-    chat_id: chatId,
-    message_id: startHourPromptMessageId,
-  });
+  const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
+  await renderHourPicker(
+    hour,
+    { chat_id: chatId, text: CREATE_PROMPTS.MEETING_HOUR_START },
+    { updateMessageId: messageId, select: action === 'SELECT' }
+  );
   const endHourPrompt = await renderSetEndHour(chatId, hour);
   await update.updateSession({
     startHour: hour,
@@ -189,28 +190,28 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update, edit = 
 };
 
 export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
-  const { message } = update.data;
-  if (message === undefined) {
+  const { message, callback_query } = update.data;
+  if (message === undefined && callback_query === undefined) {
     return;
   }
-  const hour = parseHour(message.text ?? '');
+  const { action, hour, hourString } = handleHourPickerUpdate(update);
   if (hour === undefined) {
-    throw new Error(`I don't understand ${message.text}\\. Try again?`);
+    throw new Error(`I don't understand ${hourString}\\. Try again?`);
   }
-  const session = await update.getSession();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const chatId = message.chat.id;
-  const endHourPromptMessageId = session.MESSAGE_ID_TO_EDIT;
-  await editMessage({
-    text: CREATE_PROMPTS.MEETING_HOUR_END + `\n\`${message.text}\``,
-    chat_id: chatId,
-    message_id: endHourPromptMessageId,
-  });
+  const chatId = (message?.chat.id ?? callback_query?.from.id)!;
+  const session = await update.getSession();
+  const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
+  await renderHourPicker(
+    hour,
+    { chat_id: chatId, text: CREATE_PROMPTS.MEETING_HOUR_START },
+    { updateMessageId: messageId, select: action === 'SELECT' }
+  );
   await update.updateSession({
     endHour: hour,
     LATEST_PROMPT: 'CONFIRM_OR_EDIT',
   });
-  await renderConfirm(message.chat.id, await update.getSession());
+  await renderConfirm(chatId, await update.getSession());
 };
 
 export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
