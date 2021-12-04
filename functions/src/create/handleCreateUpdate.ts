@@ -64,7 +64,7 @@ export const handleNameUpdate: CreateUpdateHandler = async (update, edit = false
   if (name.length === 0) {
     throw new Error('The name cannot be empty\\.');
   }
-  const chatId = message.chat.id;
+  const { chatId } = update;
   if (edit) {
     await update.updateSession({
       name,
@@ -94,8 +94,7 @@ export const handleStartDateUpdate: CreateUpdateHandler = async (update, edit = 
   if (date.isBefore(dayjs(), 'day')) {
     throw new Error('You cannot start before today\\.');
   }
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const chatId = (message?.chat.id ?? callback_query?.from.id)!;
+  const { chatId } = update;
   const messageId =
     callback_query?.message?.message_id ?? (await update.getSession()).MESSAGE_ID_TO_EDIT;
   await renderCalendar(
@@ -132,8 +131,7 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
   if (action === 'SELECT' && date.isBefore(startDate)) {
     throw new Error('You cannot end before you start\\.');
   }
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const chatId = (message?.chat.id ?? callback_query?.from.id)!;
+  const { chatId } = update;
   const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
   await renderCalendar(
     date,
@@ -168,8 +166,7 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update, edit = 
   if (hour === undefined) {
     throw new Error(`I don't understand ${hourString}\\. Try again?`);
   }
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const chatId = (message?.chat.id ?? callback_query?.from.id)!;
+  const { chatId } = update;
   const session = await update.getSession();
   const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
   await renderHourPicker(
@@ -196,8 +193,7 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
   if (hour === undefined) {
     throw new Error(`I don't understand ${hourString}\\. Try again?`);
   }
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const chatId = (message?.chat.id ?? callback_query?.from.id)!;
+  const { chatId } = update;
   const session = await update.getSession();
   const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
   await renderHourPicker(
@@ -224,7 +220,7 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
     await renderConfirm(callback_query.from.id, await update.getSession());
     return;
   }
-  const chatId = callback_query.from.id;
+  const { chatId } = update;
   switch (action) {
     case 'SELECT_CONFIRM': {
       const meeting = await confirmCreate(update);
