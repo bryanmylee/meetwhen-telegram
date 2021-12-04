@@ -4,27 +4,27 @@ import type { CreateSession } from '../CreateSession';
 import type { Dayjs } from 'dayjs';
 import type { InlineKeyboardButton, Message } from 'telegram-typings';
 import { CREATE_PROMPTS } from '../createPrompts';
-import { calendar } from '../../views/calendar';
 import { formatHour } from '../../utils/formatHour';
+import { renderCalendar } from '../../calendar/views/renderCalendar';
 import { sendMessage } from '../../utils/sendMessage';
 
-export const promptStartCreate = async (chat_id: number): Promise<void> => {
+export const renderStartCreate = async (chat_id: number): Promise<void> => {
   await sendMessage({
     chat_id,
     text: '*Creating a new meet\\!*',
   });
 };
 
-export const promptMeetingName = async (chat_id: number): Promise<void> => {
+export const renderSetName = async (chat_id: number): Promise<void> => {
   await sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_NAME,
   });
 };
 
-export const promptStartDate = async (chat_id: number): Promise<void> => {
+export const renderSetStartDate = async (chat_id: number): Promise<void> => {
   const date = dayjs();
-  calendar(
+  renderCalendar(
     date,
     {
       chat_id,
@@ -36,8 +36,8 @@ export const promptStartDate = async (chat_id: number): Promise<void> => {
   );
 };
 
-export const promptEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
-  calendar(
+export const renderSetEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
+  renderCalendar(
     startDate.add(1, 'day'),
     {
       chat_id,
@@ -49,14 +49,14 @@ export const promptEndDate = async (chat_id: number, startDate: Dayjs): Promise<
   );
 };
 
-export const promptStartHour = async (chat_id: number): Promise<Message> => {
+export const renderSetStartHour = async (chat_id: number): Promise<Message> => {
   return sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_HOUR_START + '\n`\\[12am-11pm\\]`',
   });
 };
 
-export const promptEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
+export const renderSetEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
   const earliestHour = startHour + 1;
   const latestHour = startHour;
   return sendMessage({
@@ -67,7 +67,7 @@ export const promptEndHour = async (chat_id: number, startHour: number): Promise
   });
 };
 
-export const promptConfirm = async (chat_id: number, session: CreateSession): Promise<Message> => {
+export const renderConfirm = async (chat_id: number, session: CreateSession): Promise<Message> => {
   interface ConfirmInlineButton extends InlineKeyboardButton {
     callback_data: ConfirmAction;
   }
@@ -118,16 +118,16 @@ export const promptConfirm = async (chat_id: number, session: CreateSession): Pr
   });
 };
 
-export const promptEditMeetingName = async (chat_id: number): Promise<void> => {
+export const renderEditName = async (chat_id: number): Promise<void> => {
   await sendMessage({
     chat_id,
     text: CREATE_PROMPTS.EDIT_NAME,
   });
 };
 
-export const promptEditStartDate = async (chat_id: number): Promise<void> => {
+export const renderEditStartDate = async (chat_id: number): Promise<void> => {
   const date = dayjs();
-  calendar(
+  renderCalendar(
     date,
     {
       chat_id,
@@ -139,8 +139,8 @@ export const promptEditStartDate = async (chat_id: number): Promise<void> => {
   );
 };
 
-export const promptEditEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
-  calendar(
+export const renderEditEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
+  renderCalendar(
     startDate.add(1, 'day'),
     {
       chat_id,
@@ -152,14 +152,14 @@ export const promptEditEndDate = async (chat_id: number, startDate: Dayjs): Prom
   );
 };
 
-export const promptEditStartHour = async (chat_id: number): Promise<Message> => {
+export const renderEditStartHour = async (chat_id: number): Promise<Message> => {
   return sendMessage({
     chat_id,
     text: CREATE_PROMPTS.EDIT_HOUR_START + '\n`\\[12am-11pm\\]`',
   });
 };
 
-export const promptEditEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
+export const renderEditEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
   const earliestHour = startHour + 1;
   const latestHour = startHour;
   return sendMessage({

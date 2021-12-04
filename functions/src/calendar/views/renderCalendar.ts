@@ -1,20 +1,14 @@
+import type { CalendarPayload } from '../CalendarPayload';
 import type { Dayjs } from 'dayjs';
 import type { InlineKeyboardButton, SendMessage } from 'telegram-typings';
-import { editMessage } from '../utils/editMessage';
-import { range } from '../utils/range';
-import { sendMessage } from '../utils/sendMessage';
+import { editMessage } from '../../utils/editMessage';
+import { range } from '../../utils/range';
+import { sendMessage } from '../../utils/sendMessage';
 
 export interface RenderOptions {
   updateMessageId?: number;
   earliestDate?: Dayjs;
   selectedDate?: Dayjs;
-}
-
-export type CalendarAction = 'PAGE' | 'SELECT' | 'NOOP';
-
-export interface CalendarPayload {
-  action: CalendarAction;
-  dateString?: string;
 }
 
 export const getCalendarPayload = (data: string): CalendarPayload => {
@@ -32,7 +26,7 @@ export const getCalendarPayload = (data: string): CalendarPayload => {
   } as CalendarPayload;
 };
 
-export const calendar = async (
+export const renderCalendar = async (
   date: Dayjs,
   { text, ...options }: SendMessage,
   { updateMessageId, earliestDate, selectedDate }: RenderOptions = {}
