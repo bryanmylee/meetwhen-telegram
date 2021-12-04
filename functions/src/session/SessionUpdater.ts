@@ -1,10 +1,5 @@
 import type { Session } from './Session';
-import {
-  deleteSessionWithId,
-  findSessionById,
-  setSessionWithId,
-  updateSessionWithId,
-} from './repo';
+import { findSessionById, setSessionWithId, updateSessionWithId } from './repo';
 
 export class SessionUpdater<T extends Session = Session> {
   private _session: T | undefined;
@@ -35,7 +30,11 @@ export class SessionUpdater<T extends Session = Session> {
     await setSessionWithId(this.sessionId, newSession);
   }
 
-  public async deleteSession(): Promise<void> {
-    await deleteSessionWithId(this.sessionId);
+  public async resetSession(): Promise<void> {
+    const timezone = this._session?.TZ;
+    await setSessionWithId(this.sessionId, {
+      LATEST_PROMPT: '',
+      ...(timezone ? { TZ: timezone } : {}),
+    });
   }
 }

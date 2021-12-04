@@ -39,14 +39,14 @@ const initCommand = async (update: BindSession<Update>): Promise<void> => {
   const { chatId } = update;
   switch (message.text) {
     case '/cancel':
-      await update.deleteSession();
+      await update.resetSession();
       await sendMessage({
         chat_id: chatId,
         text: '*Cancelled\\!*',
       });
       return;
     case '/start':
-      await update.deleteSession();
+      await update.resetSession();
       await sendMessage({
         chat_id: chatId,
         text: INTRO_MESSAGE,

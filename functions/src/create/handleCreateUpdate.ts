@@ -224,12 +224,12 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
     case 'SELECT_CONFIRM': {
       const meeting = await confirmCreate(update);
       await renderDone(chatId, meeting);
-      await update.deleteSession();
+      await update.resetSession();
       break;
     }
     case 'SELECT_CANCEL': {
       await renderCancel(chatId);
-      await update.deleteSession();
+      await update.resetSession();
       break;
     }
     case 'EDIT_NAME':
