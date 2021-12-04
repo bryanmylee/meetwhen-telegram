@@ -32,7 +32,7 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
       case '/cancel':
         await update.deleteSession();
         await replyToMessage(message, {
-          text: '*Cancelled!\\!*',
+          text: '*Cancelled\\!*',
         });
         return;
     }
