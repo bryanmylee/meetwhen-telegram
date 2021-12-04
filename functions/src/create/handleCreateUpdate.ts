@@ -9,13 +9,9 @@ import { parseHour } from '../utils/parseHour';
 import { renderCalendar } from '../calendar/views/renderCalendar';
 import {
   renderConfirm,
-  renderEditEndDate,
-  renderEditEndHour,
-  renderEditName,
-  renderEditStartDate,
-  renderEditStartHour,
   renderSetEndDate,
   renderSetEndHour,
+  renderSetName,
   renderSetStartDate,
   renderSetStartHour,
 } from './views/renderCreate';
@@ -41,7 +37,7 @@ export const handleCreateUpdate: CreateUpdateHandler = async (update) => {
     case 'MEETING_HOUR_END':
       return handleEndHourUpdate(update);
     case 'CONFIRM_OR_EDIT':
-      return handleConfirmOrMoreUpdate(update);
+      return handleConfirmOrEdit(update);
     case 'EDIT_NAME':
       return handleNameUpdate(update, true);
     case 'EDIT_DATE_START':
@@ -239,7 +235,7 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
   await renderConfirm(message.chat.id, await update.getSession());
 };
 
-export const handleConfirmOrMoreUpdate: CreateUpdateHandler = async (update) => {
+export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
   const { callback_query } = update.data;
   if (callback_query === undefined) {
     return;
@@ -251,7 +247,8 @@ export const handleConfirmOrMoreUpdate: CreateUpdateHandler = async (update) => 
   }
   const chatId = callback_query.from.id;
   switch (action) {
-    case 'SELECT_MORE':
+    case 'SELECT_CONFIRM':
+    case 'SELECT_CANCEL':
       await renderConfirm(callback_query.from.id, await update.getSession());
       return;
     case 'EDIT_NAME':
@@ -259,11 +256,11 @@ export const handleConfirmOrMoreUpdate: CreateUpdateHandler = async (update) => 
         update.updateSession({
           LATEST_PROMPT: 'EDIT_NAME',
         }),
-        renderEditName(chatId),
+        renderSetName(chatId),
       ]);
       return;
     case 'EDIT_DATE_START': {
-      const message = await renderEditStartDate(chatId);
+      const message = await renderSetStartDate(chatId);
       await update.updateSession({
         LATEST_PROMPT: 'EDIT_DATE_START',
         MESSAGE_ID_TO_EDIT: message.message_id,
@@ -272,7 +269,7 @@ export const handleConfirmOrMoreUpdate: CreateUpdateHandler = async (update) => 
     }
     case 'EDIT_DATE_END': {
       const session = await update.getSession();
-      const message = await renderEditEndDate(chatId, dayjs(session.startDate));
+      const message = await renderSetEndDate(chatId, dayjs(session.startDate));
       await update.updateSession({
         LATEST_PROMPT: 'EDIT_DATE_END',
         MESSAGE_ID_TO_EDIT: message.message_id,
@@ -280,7 +277,7 @@ export const handleConfirmOrMoreUpdate: CreateUpdateHandler = async (update) => 
       return;
     }
     case 'EDIT_HOUR_START': {
-      const message = await renderEditStartHour(chatId);
+      const message = await renderSetStartHour(chatId);
       await update.updateSession({
         LATEST_PROMPT: 'EDIT_HOUR_START',
         MESSAGE_ID_TO_EDIT: message.message_id,
@@ -288,7 +285,7 @@ export const handleConfirmOrMoreUpdate: CreateUpdateHandler = async (update) => 
       return;
     }
     case 'EDIT_HOUR_END': {
-      const message = await renderEditEndHour(chatId, (await update.getSession()).startHour ?? 0);
+      const message = await renderSetEndHour(chatId, (await update.getSession()).startHour ?? 0);
       await update.updateSession({
         LATEST_PROMPT: 'EDIT_HOUR_START',
         MESSAGE_ID_TO_EDIT: message.message_id,
