@@ -30,4 +30,5 @@ const handleSetTzByLocation: TzUpdateHandler = async (update) => {
     chat_id: update.chatId,
     text: `Your timezone has been set to \`${timezone}\`\\.`,
   });
+  await update.resetSession();
 };
