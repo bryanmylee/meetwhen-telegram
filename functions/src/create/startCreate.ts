@@ -1,7 +1,7 @@
 import type { BindSession } from '../session/BindSession';
 import type { CreateSession } from './CreateSession';
 import type { Update } from 'telegram-typings';
-import { promptMeetingName, promptStartCreate } from './views/prompts';
+import { promptMeetingName, promptStartCreate } from './views/createViews';
 
 export const startCreate = async (update: BindSession<Update, CreateSession>): Promise<void> => {
   const chatId = update.data.message?.chat.id;

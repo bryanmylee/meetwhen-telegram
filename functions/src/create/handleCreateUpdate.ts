@@ -18,7 +18,7 @@ import {
   promptEndHour,
   promptStartDate,
   promptStartHour,
-} from './views/prompts';
+} from './views/createViews';
 
 type CreateUpdateHandler = (
   update: BindSession<Update, CreateSession>,

@@ -107,10 +107,6 @@ export const promptConfirm = async (chat_id: number, session: CreateSession): Pr
         text: '❌',
         callback_data: 'SELECT_CANCEL',
       },
-      {
-        text: '⚙',
-        callback_data: 'SELECT_MORE',
-      },
     ],
   ];
   return sendMessage({
