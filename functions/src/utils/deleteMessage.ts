@@ -8,7 +8,6 @@ export const deleteMessage = async (options: DeleteMessage): Promise<boolean> =>
     console.log('->', response.data);
     return true;
   } catch (error) {
-    console.error(error);
     return false;
   }
 };

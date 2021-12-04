@@ -8,7 +8,7 @@ import type { Update } from 'telegram-typings';
 import { setBotCommands } from './command/setBotCommands';
 import { getSessionIdFromUpdate } from './session/getSessionIdFromUpdate';
 import { BindSession } from './session/BindSession';
-import { handleUpdate } from './handleUpdate';
+import { handleUpdateWithError } from './handleUpdate';
 
 setBotCommands();
 
@@ -17,6 +17,6 @@ export const api = functions.region('asia-east2').https.onRequest(async (req, re
   const body = req.body as Update;
   const sessionId = getSessionIdFromUpdate(body);
   const update = new BindSession<Update>(sessionId, body);
-  handleUpdate(update);
+  handleUpdateWithError(update);
   res.send();
 });

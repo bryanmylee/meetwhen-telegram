@@ -4,6 +4,7 @@ import type { Update } from 'telegram-typings';
 import { handleCreateUpdate } from './create/handleCreateUpdate';
 import { replyToMessage } from './utils/replyToMessage';
 import { startCreate } from './create/startCreate';
+import { sendMessage } from './utils/sendMessage';
 
 const startCommand = async (update: BindSession<Update>): Promise<void> => {
   const { message } = update.data;
@@ -20,17 +21,18 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
   // session-less commands
   const { message } = update.data;
   if (message !== undefined) {
-    if (message.text === '/start') {
-      await replyToMessage(message, {
-        text: 'Welcome to the meetwhen\\.io bot\\! Get started with `/new`\\.',
-      });
-    }
-    if (message.text === '/reset') {
-      await update.deleteSession();
-      await replyToMessage(message, {
-        text: '*Starting over\\!*',
-      });
-      return;
+    switch (message.text) {
+      case '/start':
+        await replyToMessage(message, {
+          text: 'Welcome to the meetwhen\\.io bot\\! Get started with `/new`\\.',
+        });
+        return;
+      case '/reset':
+        await update.deleteSession();
+        await replyToMessage(message, {
+          text: '*Starting over\\!*',
+        });
+        return;
     }
   }
   // no-op
@@ -45,5 +47,19 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
   switch (session.COMMAND) {
     case 'new':
       handleCreateUpdate(update as unknown as BindSession<Update, CreateSession>);
+  }
+};
+
+export const handleUpdateWithError = async (update: BindSession<Update>): Promise<void> => {
+  const { message, callback_query } = update.data;
+  const chatId = message?.chat.id ?? callback_query?.from.id ?? 0;
+  try {
+    await handleUpdate(update);
+  } catch (error) {
+    console.error('error', error);
+    sendMessage({
+      chat_id: chatId,
+      text: 'Received an error\\.',
+    });
   }
 };

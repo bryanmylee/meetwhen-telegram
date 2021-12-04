@@ -87,6 +87,11 @@ export const handleStartDateUpdate: CreateUpdateHandler = async (update, edit = 
   }
   const { action, dateString } = handleCalendarUpdate(update);
   const date = dayjs(dateString);
+  if (date.isBefore(dayjs(), 'day')) {
+    throw {
+      message: 'You cannot start a meet from yesterday.',
+    };
+  }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
   const messageId =
@@ -135,10 +140,22 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
   }
   const { action, dateString } = handleCalendarUpdate(update);
   const date = dayjs(dateString);
+  if (date.isBefore(dayjs(), 'day')) {
+    throw {
+      message: 'You cannot start a meet from yesterday.',
+    };
+  }
+  const session = await update.getSession();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const startDate = dayjs(session.startDate!);
+  if (!startDate.isBefore(date)) {
+    throw {
+      message: 'Your end date must come after start date.',
+    };
+  }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
-  const messageId =
-    callback_query?.message?.message_id ?? (await update.getSession()).MESSAGE_ID_TO_EDIT;
+  const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
   switch (action) {
     case 'PAGE':
       await renderCalendar(
@@ -221,8 +238,9 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
       message: `I don't understand ${message.text}. Try again?`,
     };
   }
-  const chatId = message.chat.id;
   const session = await update.getSession();
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const chatId = message.chat.id;
   const endHourPromptMessageId = session.MESSAGE_ID_TO_EDIT;
   await editMessage({
     text: CREATE_PROMPTS.MEETING_HOUR_END + `\n\`${message.text}\``,
