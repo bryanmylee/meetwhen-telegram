@@ -8,6 +8,7 @@ import { editMessage } from '../utils/editMessage';
 import { parseHour } from '../utils/parseHour';
 import { renderCalendar } from '../calendar/views/renderCalendar';
 import {
+  renderCancel,
   renderConfirm,
   renderDone,
   renderSetEndDate,
@@ -268,8 +269,8 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
       break;
     }
     case 'SELECT_CANCEL': {
-      await renderConfirm(chatId, await update.getSession());
-      await renderDone(chatId);
+      await renderCancel(chatId);
+      await update.deleteSession();
       break;
     }
     case 'EDIT_NAME':
