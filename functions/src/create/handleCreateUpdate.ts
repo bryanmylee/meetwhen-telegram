@@ -268,7 +268,7 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
     case 'EDIT_HOUR_END': {
       const message = await renderSetEndHour(chatId, (await update.getSession()).startHour ?? 0);
       await update.updateSession({
-        LATEST_PROMPT: 'EDIT_HOUR_START',
+        LATEST_PROMPT: 'EDIT_HOUR_END',
         MESSAGE_ID_TO_EDIT: message.message_id,
       });
       break;
