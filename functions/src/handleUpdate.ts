@@ -7,6 +7,7 @@ import { sendMessage } from './utils/sendMessage';
 import { initCreate } from './create/initCreate';
 import { initIntro } from './intro/initIntro';
 import type { IntroSession } from './intro/IntroSession';
+import { handleIntroUpdate } from './intro/handleIntroUpdate';
 
 const initCommand = async (update: BindSession<Update>): Promise<void> => {
   const { message } = update.data;
@@ -41,6 +42,8 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
     return await initCommand(update);
   }
   switch (session.COMMAND) {
+    case 'start':
+      return await handleIntroUpdate(update as unknown as BindSession<Update, IntroSession>);
     case 'new':
       return await handleCreateUpdate(update as unknown as BindSession<Update, CreateSession>);
   }
