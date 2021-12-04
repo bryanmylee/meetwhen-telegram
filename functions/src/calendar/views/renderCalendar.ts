@@ -1,5 +1,5 @@
 import type { Dayjs } from 'dayjs';
-import type { InlineKeyboardButton, SendMessage } from 'telegram-typings';
+import type { InlineKeyboardButton, Message, SendMessage } from 'telegram-typings';
 import { editMessage } from '../../utils/editMessage';
 import { range } from '../../utils/range';
 import { sendMessage } from '../../utils/sendMessage';
@@ -14,39 +14,41 @@ export const renderCalendar = async (
   date: Dayjs,
   { text, ...options }: SendMessage,
   { updateMessageId, earliestDate, selectedDate }: RenderOptions = {}
-): Promise<void> => {
+): Promise<Message> => {
   const withSelectedText =
-    text + (selectedDate !== undefined ? `\n\`${selectedDate.format('D MMM YYYY')}\`` : '');
+    text +
+    (selectedDate !== undefined
+      ? `\n\`${selectedDate.format('D MMM YYYY')}\``
+      : '\n`\\[date month year\\]`');
   if (selectedDate !== undefined) {
     if (updateMessageId !== undefined) {
-      await editMessage({
+      return editMessage({
         ...options,
         text: withSelectedText,
         message_id: updateMessageId,
         reply_markup: undefined,
       });
     } else {
-      await sendMessage({
+      return sendMessage({
         ...options,
         text: withSelectedText,
         reply_markup: undefined,
       });
     }
-    return;
   }
   const monthButtons = getMonthButtons(date, { selectedDate });
   const dayButtons = getDayButtons();
   const dateButtons = getDateButtons(date, { earliestDate, selectedDate });
   const inline_keyboard = monthButtons.concat(dayButtons, dateButtons);
   if (updateMessageId !== undefined) {
-    editMessage({
+    return editMessage({
       ...options,
       text: withSelectedText,
       message_id: updateMessageId,
       reply_markup: { inline_keyboard },
     });
   } else {
-    sendMessage({
+    return sendMessage({
       ...options,
       text: withSelectedText,
       reply_markup: { inline_keyboard },

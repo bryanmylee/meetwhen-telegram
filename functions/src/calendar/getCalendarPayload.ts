@@ -1,6 +1,18 @@
+import dayjs from 'dayjs';
 import type { CalendarPayload } from './CalendarPayload';
 
-export const getCalendarPayload = (data: string): CalendarPayload => {
+export const getPayloadFromMessage = (text: string): CalendarPayload => {
+  const date = dayjs(text);
+  if (date.isValid()) {
+    return {
+      action: 'SELECT',
+      dateString: date.format('YYYYMMDD'),
+    };
+  }
+  return { action: 'NOOP' };
+};
+
+export const getPayloadFromCallback = (data: string): CalendarPayload => {
   if (data === undefined) {
     return { action: 'NOOP' };
   }

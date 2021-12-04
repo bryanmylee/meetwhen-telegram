@@ -8,23 +8,23 @@ import { formatHour } from '../../utils/formatHour';
 import { renderCalendar } from '../../calendar/views/renderCalendar';
 import { sendMessage } from '../../utils/sendMessage';
 
-export const renderStartCreate = async (chat_id: number): Promise<void> => {
-  await sendMessage({
+export const renderStartCreate = async (chat_id: number): Promise<Message> => {
+  return sendMessage({
     chat_id,
     text: '*Creating a new meet\\!*',
   });
 };
 
-export const renderSetName = async (chat_id: number): Promise<void> => {
-  await sendMessage({
+export const renderSetName = async (chat_id: number): Promise<Message> => {
+  return sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_NAME,
   });
 };
 
-export const renderSetStartDate = async (chat_id: number): Promise<void> => {
+export const renderSetStartDate = async (chat_id: number): Promise<Message> => {
   const date = dayjs();
-  renderCalendar(
+  return renderCalendar(
     date,
     {
       chat_id,
@@ -36,8 +36,8 @@ export const renderSetStartDate = async (chat_id: number): Promise<void> => {
   );
 };
 
-export const renderSetEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
-  renderCalendar(
+export const renderSetEndDate = async (chat_id: number, startDate: Dayjs): Promise<Message> => {
+  return renderCalendar(
     startDate.add(1, 'day'),
     {
       chat_id,
@@ -118,16 +118,16 @@ export const renderConfirm = async (chat_id: number, session: CreateSession): Pr
   });
 };
 
-export const renderEditName = async (chat_id: number): Promise<void> => {
-  await sendMessage({
+export const renderEditName = async (chat_id: number): Promise<Message> => {
+  return sendMessage({
     chat_id,
     text: CREATE_PROMPTS.EDIT_NAME,
   });
 };
 
-export const renderEditStartDate = async (chat_id: number): Promise<void> => {
+export const renderEditStartDate = async (chat_id: number): Promise<Message> => {
   const date = dayjs();
-  renderCalendar(
+  return renderCalendar(
     date,
     {
       chat_id,
@@ -139,8 +139,8 @@ export const renderEditStartDate = async (chat_id: number): Promise<void> => {
   );
 };
 
-export const renderEditEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
-  renderCalendar(
+export const renderEditEndDate = async (chat_id: number, startDate: Dayjs): Promise<Message> => {
+  return renderCalendar(
     startDate.add(1, 'day'),
     {
       chat_id,
