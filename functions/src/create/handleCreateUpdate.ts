@@ -5,8 +5,9 @@ import type { CreateSession } from './CreateSession';
 import type { Update } from 'telegram-typings';
 import { CREATE_PROMPTS } from './createPrompts';
 import { editMessage } from '../utils/editMessage';
+import { getCalendarPayload } from '../calendar/getCalendarPayload';
 import { parseHour } from '../utils/parseHour';
-import { renderCalendar, getCalendarPayload } from '../calendar/views/renderCalendar';
+import { renderCalendar } from '../calendar/views/renderCalendar';
 import {
   renderConfirm,
   renderEditEndDate,

@@ -1,4 +1,3 @@
-import type { CalendarPayload } from '../CalendarPayload';
 import type { Dayjs } from 'dayjs';
 import type { InlineKeyboardButton, SendMessage } from 'telegram-typings';
 import { editMessage } from '../../utils/editMessage';
@@ -10,21 +9,6 @@ export interface RenderOptions {
   earliestDate?: Dayjs;
   selectedDate?: Dayjs;
 }
-
-export const getCalendarPayload = (data: string): CalendarPayload => {
-  if (data === undefined) {
-    return { action: 'NOOP' };
-  }
-  const tokens = data.match(/(\w+)_(\w+)/);
-  if (tokens === null) {
-    return { action: 'NOOP' };
-  }
-  const [, action, dateString] = tokens;
-  return {
-    action,
-    dateString,
-  } as CalendarPayload;
-};
 
 export const renderCalendar = async (
   date: Dayjs,
