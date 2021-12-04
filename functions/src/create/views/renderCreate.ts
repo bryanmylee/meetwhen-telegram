@@ -31,22 +31,18 @@ export const renderSetStartDate = async (chat_id: number): Promise<Message> => {
       chat_id,
       text: CREATE_PROMPTS.MEETING_DATE_START,
     },
-    {
-      earliestDate: dayjs(),
-    }
+    { earliestDate: dayjs() }
   );
 };
 
 export const renderSetEndDate = async (chat_id: number, startDate: Dayjs): Promise<Message> => {
   return await renderCalendar(
-    startDate.add(1, 'day'),
+    startDate,
     {
       chat_id,
       text: CREATE_PROMPTS.MEETING_DATE_END,
     },
-    {
-      earliestDate: startDate.add(1, 'day'),
-    }
+    { earliestDate: startDate }
   );
 };
 
@@ -113,9 +109,7 @@ export const renderConfirm = async (chat_id: number, session: CreateSession): Pr
   return await sendMessage({
     chat_id,
     text: CREATE_PROMPTS.CONFIRM_OR_EDIT,
-    reply_markup: {
-      inline_keyboard,
-    },
+    reply_markup: { inline_keyboard },
   });
 };
 
@@ -131,9 +125,7 @@ export const renderDone = async (chat_id: number, meeting: Meeting): Promise<Mes
   return await sendMessage({
     chat_id,
     text: `All done\\! Visit your meet [here](https://meetwhen.io/${meeting.slug})\\.`,
-    reply_markup: {
-      inline_keyboard,
-    },
+    reply_markup: { inline_keyboard },
   });
 };
 

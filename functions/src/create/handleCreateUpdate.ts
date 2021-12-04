@@ -151,8 +151,8 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
   const session = await update.getSession();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const startDate = dayjs(session.startDate!);
-  if (!startDate.isBefore(date)) {
-    throw new Error('Your end date must come after start date\\.');
+  if (date.isBefore(startDate)) {
+    throw new Error("Your end date can't be before your start date\\.");
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
@@ -167,7 +167,7 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
         },
         {
           updateMessageId: messageId,
-          earliestDate: dayjs(),
+          earliestDate: startDate,
         }
       );
       return;

@@ -21,7 +21,7 @@ export const confirmCreate = async (
     throw new Error("I'm missing some data\\.");
   }
 
-  const selectedDates = getDaysBetween(dayjs(startDate), dayjs(endDate));
+  const selectedDates = getDaysBetween(dayjs(startDate), dayjs(endDate).add(1, 'day'));
   const fromHour = dayjs().hour(startHour).minute(0).second(0);
   let toHour = dayjs().hour(endHour).minute(0).second(0);
   if (!fromHour.isBefore(toHour)) {
