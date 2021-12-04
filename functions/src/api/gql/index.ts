@@ -1,5 +1,6 @@
 import { MEETWHEN_API } from '../../env';
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
+import axios from 'axios';
 
 interface QueryParams {
   query: string;
@@ -8,16 +9,15 @@ interface QueryParams {
 }
 
 export const query = async ({ query, variables, headers }: QueryParams): Promise<unknown> => {
-  const response = await fetch(MEETWHEN_API, {
-    method: 'post',
-    headers: {
-      ...headers,
-      'content-type': 'application/json',
-      accept: 'application/json',
+  const response = await axios.post(
+    MEETWHEN_API,
+    {
+      query: query.replace(/(\s|\n)+/g, ' '),
+      variables,
     },
-    body: JSON.stringify({ query: query.replace(/(\s|\n)+/g, ' '), variables }),
-  });
-  const { data, errors } = await response.json();
+    { headers }
+  );
+  const { data, errors } = response.data;
   if (errors !== undefined) {
     throw errors;
   }
