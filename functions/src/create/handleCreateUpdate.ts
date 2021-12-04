@@ -16,6 +16,7 @@ import {
   renderSetStartHour,
 } from './views/renderCreate';
 import { handleCalendarUpdate } from '../calendar/handleCalendarUpdate';
+import { deleteMessage } from '../utils/deleteMessage';
 
 type CreateUpdateHandler = (
   update: BindSession<Update, CreateSession>,
@@ -250,7 +251,7 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
     case 'SELECT_CONFIRM':
     case 'SELECT_CANCEL':
       await renderConfirm(callback_query.from.id, await update.getSession());
-      return;
+      break;
     case 'EDIT_NAME':
       await Promise.all([
         update.updateSession({
@@ -258,14 +259,14 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
         }),
         renderSetName(chatId),
       ]);
-      return;
+      break;
     case 'EDIT_DATE_START': {
       const message = await renderSetStartDate(chatId);
       await update.updateSession({
         LATEST_PROMPT: 'EDIT_DATE_START',
         MESSAGE_ID_TO_EDIT: message.message_id,
       });
-      return;
+      break;
     }
     case 'EDIT_DATE_END': {
       const session = await update.getSession();
@@ -274,7 +275,7 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
         LATEST_PROMPT: 'EDIT_DATE_END',
         MESSAGE_ID_TO_EDIT: message.message_id,
       });
-      return;
+      break;
     }
     case 'EDIT_HOUR_START': {
       const message = await renderSetStartHour(chatId);
@@ -282,7 +283,7 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
         LATEST_PROMPT: 'EDIT_HOUR_START',
         MESSAGE_ID_TO_EDIT: message.message_id,
       });
-      return;
+      break;
     }
     case 'EDIT_HOUR_END': {
       const message = await renderSetEndHour(chatId, (await update.getSession()).startHour ?? 0);
@@ -290,7 +291,11 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
         LATEST_PROMPT: 'EDIT_HOUR_START',
         MESSAGE_ID_TO_EDIT: message.message_id,
       });
-      return;
+      break;
     }
   }
+  await deleteMessage({
+    chat_id: chatId,
+    message_id: callback_query.message?.message_id ?? 0,
+  });
 };
