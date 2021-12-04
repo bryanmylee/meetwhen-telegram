@@ -27,7 +27,7 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
   if (update.data.message?.text === '/cancel') {
     await update.deleteSession();
     await sendMessage({
-      chat_id: '', // TODO
+      chat_id: update.chatId,
       text: '*Cancelled\\!*',
     });
     return;

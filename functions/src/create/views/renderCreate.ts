@@ -129,6 +129,6 @@ export const renderDone = async (chat_id: number, meeting: Meeting): Promise<Mes
 export const renderCancel = async (chat_id: number): Promise<Message> => {
   return await sendMessage({
     chat_id,
-    text: 'Cancelled\\.',
+    text: '*Cancelled\\!*',
   });
 };
