@@ -24,14 +24,15 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
   if (message !== undefined) {
     switch (message.text) {
       case '/start':
+        await update.deleteSession();
         await replyToMessage(message, {
           text: 'Welcome to the meetwhen\\.io bot\\! Get started with `/new`\\.',
         });
         return;
-      case '/reset':
+      case '/cancel':
         await update.deleteSession();
         await replyToMessage(message, {
-          text: '*Starting over\\!*',
+          text: '*Cancelled!\\!*',
         });
         return;
     }

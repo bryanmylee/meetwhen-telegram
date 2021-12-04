@@ -11,7 +11,7 @@ export const COMMANDS: MyBotCommand[] = [
     description: 'Create a new meet',
   },
   {
-    command: 'reset',
-    description: 'Start over',
+    command: 'cancel',
+    description: 'Cancel your current action',
   },
 ];
