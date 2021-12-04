@@ -19,6 +19,14 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
   if (callback_query?.data === 'NOOP') {
     return;
   }
+  if (update.data.message?.text === '/cancel') {
+    await update.resetSession();
+    await sendMessage({
+      chat_id: update.chatId,
+      text: '*Cancelled\\!*',
+    });
+    return;
+  }
   const session = await update.getSession();
   if (session?.COMMAND === undefined) {
     return await initCommand(update);
@@ -38,13 +46,6 @@ const initCommand = async (update: BindSession<Update>): Promise<void> => {
   }
   const { chatId } = update;
   switch (message.text) {
-    case '/cancel':
-      await update.resetSession();
-      await sendMessage({
-        chat_id: chatId,
-        text: '*Cancelled\\!*',
-      });
-      return;
     case '/start':
       await update.resetSession();
       await sendMessage({
