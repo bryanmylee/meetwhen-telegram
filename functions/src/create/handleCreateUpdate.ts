@@ -162,7 +162,6 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update, edit = 
     return;
   }
   const { action, hour, hourString } = handleHourPickerUpdate(update);
-  console.log({ action, hour, hourString });
   if (hour === undefined) {
     throw new Error(`I don't understand ${hourString}\\. Try again?`);
   }
