@@ -68,12 +68,16 @@ export const handleNameUpdate: CreateUpdateHandler = async (update, edit = false
   }
   const chatId = message.chat.id;
   if (edit) {
+    await update.updateSession({
+      name,
+      LATEST_PROMPT: 'CONFIRM_OR_EDIT',
+    });
     await renderConfirm(chatId, await update.getSession());
   } else {
     const message = await renderSetStartDate(chatId);
     await update.updateSession({
       name,
-      LATEST_PROMPT: edit ? 'CONFIRM_OR_EDIT' : 'MEETING_DATE_START',
+      LATEST_PROMPT: 'MEETING_DATE_START',
       MESSAGE_ID_TO_EDIT: message.message_id,
     });
   }
