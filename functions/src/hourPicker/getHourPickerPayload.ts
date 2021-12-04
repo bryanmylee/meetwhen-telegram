@@ -1,4 +1,5 @@
 import { parseHour } from '../utils/parseHour';
+import type { HourPickerAction } from './HourPickerAction';
 import type { HourPickerPayload } from './HourPickerPayload';
 
 export const getPayloadFromMessage = (text: string): HourPickerPayload => {
@@ -21,6 +22,10 @@ export const getPayloadFromCallback = (data: string): HourPickerPayload => {
   if (tokens === null) {
     return { action: 'INVALID', hourString: data };
   }
-  const [, , hourString] = tokens;
-  return getPayloadFromMessage(hourString);
+  const [, action, hourString] = tokens;
+  const hour = parseHour(hourString);
+  if (hour === undefined) {
+    return { action: 'INVALID', hourString };
+  }
+  return { action: action as HourPickerAction, hourString, hour };
 };

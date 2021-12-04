@@ -14,10 +14,7 @@ export const renderHourPicker = async (
   { text, ...options }: SendMessage,
   { updateMessageId, select = false }: RenderOptions = {}
 ): Promise<Message> => {
-  const startHourLabel = formatHour(hour);
-  const textLabel =
-    text +
-    (select ? `\n\`${formatHour(hour)}\`` : `\n\`\\[${startHourLabel}-${startHourLabel}\\]\``);
+  const textLabel = text + (select ? `\n\`${formatHour(hour)}\`` : '\n`\\[12am-11pm\\]`');
   if (select) {
     if (updateMessageId !== undefined) {
       return editMessage({
@@ -60,7 +57,7 @@ export const getAmPmToggle = (hour: number): InlineKeyboardButton[][] => {
   if (hour < 12) {
     return [[{ text: 'am / pm', callback_data: `PAGE_${hour}pm` }]];
   }
-  return [[{ text: 'am / pm', callback_data: `PAGE_${hour}am` }]];
+  return [[{ text: 'am / pm', callback_data: `PAGE_${hour - 12}am` }]];
 };
 
 const getSelectButton = (hour: number): InlineKeyboardButton => {

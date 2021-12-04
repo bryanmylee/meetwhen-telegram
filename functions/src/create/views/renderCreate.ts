@@ -57,7 +57,7 @@ export const renderSetStartHour = async (chat_id: number): Promise<Message> => {
 export const renderSetEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
   return await renderHourPicker(startHour, {
     chat_id,
-    text: CREATE_PROMPTS.MEETING_HOUR_START,
+    text: CREATE_PROMPTS.MEETING_HOUR_END,
   });
 };
 

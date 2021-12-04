@@ -10,10 +10,12 @@ export const handleHourPickerUpdate = (update: BindSession<Update>): HourPickerP
   }
   const text = message?.text;
   if (text !== undefined) {
+    console.log('text payload', text);
     return getPayloadFromMessage(text);
   }
   const data = callback_query?.data;
   if (data !== undefined) {
+    console.log('data payload', data);
     return getPayloadFromCallback(data);
   }
   return { action: 'NOOP' };

@@ -103,16 +103,13 @@ export const handleStartDateUpdate: CreateUpdateHandler = async (update, edit = 
     { chat_id: chatId, text: CREATE_PROMPTS.MEETING_DATE_START },
     { updateMessageId: messageId, earliestDate: dayjs(), select: action === 'SELECT' }
   );
-  switch (action) {
-    case 'SELECT': {
-      const message = await renderSetEndDate(chatId, date);
-      await update.updateSession({
-        startDate: dateString,
-        LATEST_PROMPT: edit ? 'EDIT_DATE_END' : 'MEETING_DATE_END',
-        MESSAGE_ID_TO_EDIT: message.message_id,
-      });
-      return;
-    }
+  if (action === 'SELECT') {
+    const message = await renderSetEndDate(chatId, date);
+    await update.updateSession({
+      startDate: dateString,
+      LATEST_PROMPT: edit ? 'EDIT_DATE_END' : 'MEETING_DATE_END',
+      MESSAGE_ID_TO_EDIT: message.message_id,
+    });
   }
 };
 
@@ -143,22 +140,20 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
     { chat_id: chatId, text: CREATE_PROMPTS.MEETING_DATE_END },
     { updateMessageId: messageId, earliestDate: startDate, select: action === 'SELECT' }
   );
-  switch (action) {
-    case 'SELECT': {
-      if (edit) {
-        await update.updateSession({
-          endDate: dateString,
-          LATEST_PROMPT: 'CONFIRM_OR_EDIT',
-        });
-        await renderConfirm(chatId, await update.getSession());
-      } else {
-        const startHourPrompt = await renderSetStartHour(chatId);
-        await update.updateSession({
-          endDate: dateString,
-          LATEST_PROMPT: 'MEETING_HOUR_START',
-          MESSAGE_ID_TO_EDIT: startHourPrompt.message_id,
-        });
-      }
+  if (action === 'SELECT') {
+    if (edit) {
+      await update.updateSession({
+        endDate: dateString,
+        LATEST_PROMPT: 'CONFIRM_OR_EDIT',
+      });
+      await renderConfirm(chatId, await update.getSession());
+    } else {
+      const startHourPrompt = await renderSetStartHour(chatId);
+      await update.updateSession({
+        endDate: dateString,
+        LATEST_PROMPT: 'MEETING_HOUR_START',
+        MESSAGE_ID_TO_EDIT: startHourPrompt.message_id,
+      });
     }
   }
 };
@@ -169,6 +164,7 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update, edit = 
     return;
   }
   const { action, hour, hourString } = handleHourPickerUpdate(update);
+  console.log({ action, hour, hourString });
   if (hour === undefined) {
     throw new Error(`I don't understand ${hourString}\\. Try again?`);
   }
@@ -181,12 +177,14 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update, edit = 
     { chat_id: chatId, text: CREATE_PROMPTS.MEETING_HOUR_START },
     { updateMessageId: messageId, select: action === 'SELECT' }
   );
-  const endHourPrompt = await renderSetEndHour(chatId, hour);
-  await update.updateSession({
-    startHour: hour,
-    LATEST_PROMPT: edit ? 'EDIT_HOUR_END' : 'MEETING_HOUR_END',
-    MESSAGE_ID_TO_EDIT: endHourPrompt.message_id,
-  });
+  if (action === 'SELECT') {
+    const endHourPrompt = await renderSetEndHour(chatId, hour);
+    await update.updateSession({
+      startHour: hour,
+      LATEST_PROMPT: edit ? 'EDIT_HOUR_END' : 'MEETING_HOUR_END',
+      MESSAGE_ID_TO_EDIT: endHourPrompt.message_id,
+    });
+  }
 };
 
 export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
@@ -204,14 +202,16 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
   const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
   await renderHourPicker(
     hour,
-    { chat_id: chatId, text: CREATE_PROMPTS.MEETING_HOUR_START },
+    { chat_id: chatId, text: CREATE_PROMPTS.MEETING_HOUR_END },
     { updateMessageId: messageId, select: action === 'SELECT' }
   );
-  await update.updateSession({
-    endHour: hour,
-    LATEST_PROMPT: 'CONFIRM_OR_EDIT',
-  });
-  await renderConfirm(chatId, await update.getSession());
+  if (action === 'SELECT') {
+    await update.updateSession({
+      endHour: hour,
+      LATEST_PROMPT: 'CONFIRM_OR_EDIT',
+    });
+    await renderConfirm(chatId, await update.getSession());
+  }
 };
 
 export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
