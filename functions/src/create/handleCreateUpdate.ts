@@ -266,6 +266,7 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
     case 'SELECT_CONFIRM': {
       const meeting = await confirmCreate(update);
       await renderDone(chatId, meeting);
+      await update.deleteSession();
       break;
     }
     case 'SELECT_CANCEL': {
