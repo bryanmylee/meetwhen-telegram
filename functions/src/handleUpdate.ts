@@ -17,6 +17,7 @@ const startCommand = async (update: BindSession<Update>): Promise<void> => {
 };
 
 export const handleUpdate = async (update: BindSession<Update>): Promise<void> => {
+  // session-less commands
   const { message } = update.data;
   if (message !== undefined) {
     if (message.text === '/start') {
@@ -31,6 +32,11 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
       });
       return;
     }
+  }
+  // no-op
+  const { callback_query } = update.data;
+  if (callback_query?.data === 'NOOP') {
+    return;
   }
   const session = await update.getSession();
   if (session?.COMMAND === undefined) {

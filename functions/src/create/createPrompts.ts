@@ -4,5 +4,5 @@ export const CREATE_PROMPTS = {
   MEETING_DATE_END: 'What day should we end on?',
   MEETING_HOUR_START: 'Send me the earliest hour for your meet\\.',
   MEETING_HOUR_END: 'And the latest?',
-  CONFIRM_OR_ADVANCED: 'Confirm your meet or set more advanced options\\.',
+  CONFIRM_OR_ADVANCED: 'Confirm your meet? Select option to edit\\.',
 };

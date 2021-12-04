@@ -6,7 +6,13 @@ import { CREATE_PROMPTS } from './createPrompts';
 import { calendar, getCalendarPayload } from '../views/calendar';
 import { editMessage } from '../utils/editMessage';
 import { parseHour } from '../utils/parseHour';
-import { promptEndDate, promptEndHour, promptStartDate, promptStartHour } from './views/prompts';
+import {
+  promptConfirm,
+  promptEndDate,
+  promptEndHour,
+  promptStartDate,
+  promptStartHour,
+} from './views/prompts';
 
 type CreateUpdateHandler = (update: BindSession<Update, CreateSession>) => Promise<void>;
 
@@ -191,12 +197,32 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
     chat_id: message.chat.id,
     message_id: endHourPromptMessageId,
   });
-  await update.updateSession({
-    endHour: hour,
-    LATEST_PROMPT: 'CONFIRM_OR_ADVANCED',
-  });
+  await Promise.all([
+    update.updateSession({
+      endHour: hour,
+      LATEST_PROMPT: 'CONFIRM_OR_ADVANCED',
+    }),
+    promptConfirm(message.chat.id, await update.getSession()),
+  ]);
 };
 
 export const handleConfirmOrMoreUpdate: CreateUpdateHandler = async (update) => {
-  console.log('confirm update?', update.data);
+  const { callback_query } = update.data;
+  if (callback_query === undefined) {
+    return;
+  }
+  const command = callback_query.data;
+  if (command === undefined) {
+    await promptConfirm(callback_query.from.id, await update.getSession());
+    return;
+  }
+  switch (command) {
+    case 'SELECT_CONFIRM':
+      await promptConfirm(callback_query.from.id, await update.getSession());
+      console.log('CONFIRMING MEET');
+      return;
+    case 'SELECT_CANCEL':
+      console.log('CANCELLING MEET');
+      return;
+  }
 };
