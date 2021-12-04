@@ -1,3 +1,4 @@
+import type { CalendarAction } from '../CalendarAction';
 import type { Dayjs } from 'dayjs';
 import type { InlineKeyboardButton, Message, SendMessage } from 'telegram-typings';
 import { editMessage } from '../../utils/editMessage';
@@ -131,4 +132,22 @@ const getDateButtons = (
   }
 
   return inline_keyboard;
+};
+
+export interface UpdateOptions {
+  updateMessageId?: number;
+  action: CalendarAction;
+  pagedDate?: Dayjs;
+}
+
+export const updateCalendar = async (
+  date: Dayjs,
+  options: SendMessage,
+  { updateMessageId, action, pagedDate }: UpdateOptions = { action: 'PAGE' }
+): Promise<Message> => {
+  return await renderCalendar(date, options, {
+    updateMessageId,
+    earliestDate: action === 'PAGE' ? pagedDate : undefined,
+    selectedDate: action === 'SELECT' ? date : undefined,
+  });
 };

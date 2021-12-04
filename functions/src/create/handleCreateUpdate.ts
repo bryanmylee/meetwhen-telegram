@@ -6,7 +6,7 @@ import type { Update } from 'telegram-typings';
 import { CREATE_PROMPTS } from './createPrompts';
 import { editMessage } from '../utils/editMessage';
 import { parseHour } from '../utils/parseHour';
-import { renderCalendar } from '../calendar/views/renderCalendar';
+import { renderCalendar, updateCalendar } from '../calendar/views/renderCalendar';
 import {
   renderCancel,
   renderConfirm,
@@ -157,32 +157,13 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
   const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
+  await updateCalendar(
+    date,
+    { chat_id: chatId, text: CREATE_PROMPTS.MEETING_DATE_END },
+    { action, updateMessageId: messageId }
+  );
   switch (action) {
-    case 'PAGE':
-      await renderCalendar(
-        date,
-        {
-          chat_id: chatId,
-          text: CREATE_PROMPTS.MEETING_DATE_END,
-        },
-        {
-          updateMessageId: messageId,
-          earliestDate: startDate,
-        }
-      );
-      return;
     case 'SELECT': {
-      await renderCalendar(
-        date,
-        {
-          chat_id: chatId,
-          text: CREATE_PROMPTS.MEETING_DATE_START,
-        },
-        {
-          updateMessageId: messageId,
-          selectedDate: date,
-        }
-      );
       if (edit) {
         await update.updateSession({
           endDate: dateString,
