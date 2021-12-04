@@ -17,6 +17,6 @@ export const api = functions.region('asia-east2').https.onRequest(async (req, re
   const body = req.body as Update;
   const sessionId = getSessionIdFromUpdate(body);
   const update = new BindSession<Update>(sessionId, body);
-  handleUpdateWithError(update);
+  await handleUpdateWithError(update);
   res.send();
 });

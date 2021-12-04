@@ -41,14 +41,14 @@ export const renderCalendar = async (
   const dateButtons = getDateButtons(date, { earliestDate, selectedDate });
   const inline_keyboard = monthButtons.concat(dayButtons, dateButtons);
   if (updateMessageId !== undefined) {
-    return editMessage({
+    return await editMessage({
       ...options,
       text: withSelectedText,
       message_id: updateMessageId,
       reply_markup: { inline_keyboard },
     });
   } else {
-    return sendMessage({
+    return await sendMessage({
       ...options,
       text: withSelectedText,
       reply_markup: { inline_keyboard },

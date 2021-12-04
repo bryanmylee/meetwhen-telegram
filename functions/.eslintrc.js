@@ -12,16 +12,16 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
   ],
-  parser: "@typescript-eslint/parser",
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ["tsconfig.json", "tsconfig.dev.json"],
-    sourceType: "module",
+    project: ['tsconfig.json', 'tsconfig.dev.json'],
+    sourceType: 'module',
   },
   ignorePatterns: [
-    "/lib/**/*", // Ignore built files.
+    '/lib/**/*', // Ignore built files.
   ],
-  plugins: [
-    "@typescript-eslint",
-    "import",
-  ],
+  plugins: ['@typescript-eslint', 'import'],
+  rules: {
+    'require-await': 'error',
+  },
 };

@@ -9,14 +9,14 @@ import { renderCalendar } from '../../calendar/views/renderCalendar';
 import { sendMessage } from '../../utils/sendMessage';
 
 export const renderStartCreate = async (chat_id: number): Promise<Message> => {
-  return sendMessage({
+  return await sendMessage({
     chat_id,
     text: '*Creating a new meet\\!*',
   });
 };
 
 export const renderSetName = async (chat_id: number): Promise<Message> => {
-  return sendMessage({
+  return await sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_NAME,
   });
@@ -24,7 +24,7 @@ export const renderSetName = async (chat_id: number): Promise<Message> => {
 
 export const renderSetStartDate = async (chat_id: number): Promise<Message> => {
   const date = dayjs();
-  return renderCalendar(
+  return await renderCalendar(
     date,
     {
       chat_id,
@@ -37,7 +37,7 @@ export const renderSetStartDate = async (chat_id: number): Promise<Message> => {
 };
 
 export const renderSetEndDate = async (chat_id: number, startDate: Dayjs): Promise<Message> => {
-  return renderCalendar(
+  return await renderCalendar(
     startDate.add(1, 'day'),
     {
       chat_id,
@@ -50,7 +50,7 @@ export const renderSetEndDate = async (chat_id: number, startDate: Dayjs): Promi
 };
 
 export const renderSetStartHour = async (chat_id: number): Promise<Message> => {
-  return sendMessage({
+  return await sendMessage({
     chat_id,
     text: CREATE_PROMPTS.MEETING_HOUR_START + '\n`\\[12am-11pm\\]`',
   });
@@ -59,7 +59,7 @@ export const renderSetStartHour = async (chat_id: number): Promise<Message> => {
 export const renderSetEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
   const earliestHour = startHour + 1;
   const latestHour = startHour;
-  return sendMessage({
+  return await sendMessage({
     chat_id,
     text:
       CREATE_PROMPTS.MEETING_HOUR_END +
@@ -109,7 +109,7 @@ export const renderConfirm = async (chat_id: number, session: CreateSession): Pr
       },
     ],
   ];
-  return sendMessage({
+  return await sendMessage({
     chat_id,
     text: CREATE_PROMPTS.CONFIRM_OR_EDIT,
     reply_markup: {

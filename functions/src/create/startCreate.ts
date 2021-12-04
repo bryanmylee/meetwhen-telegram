@@ -8,7 +8,7 @@ export const startCreate = async (update: BindSession<Update, CreateSession>): P
   if (chatId === undefined) {
     return;
   }
-  update.setSession({
+  await update.setSession({
     COMMAND: 'new',
     LATEST_PROMPT: 'MEETING_NAME',
   });

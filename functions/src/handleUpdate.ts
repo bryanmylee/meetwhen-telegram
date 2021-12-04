@@ -42,11 +42,11 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
   }
   const session = await update.getSession();
   if (session?.COMMAND === undefined) {
-    return startCommand(update);
+    return await startCommand(update);
   }
   switch (session.COMMAND) {
     case 'new':
-      handleCreateUpdate(update as unknown as BindSession<Update, CreateSession>);
+      await handleCreateUpdate(update as unknown as BindSession<Update, CreateSession>);
   }
 };
 
