@@ -21,22 +21,21 @@ const startCommand = async (update: BindSession<Update>): Promise<void> => {
 export const handleUpdate = async (update: BindSession<Update>): Promise<void> => {
   // session-less commands
   const { message } = update.data;
-  if (message === undefined) {
-    return;
-  }
-  switch (message.text) {
-    case '/start':
-      await update.deleteSession();
-      await replyToMessage(message, {
-        text: 'Welcome to the meetwhen\\.io bot\\! Get started with `/new`\\.',
-      });
-      return;
-    case '/cancel':
-      await update.deleteSession();
-      await replyToMessage(message, {
-        text: '*Cancelled\\!*',
-      });
-      return;
+  if (message !== undefined) {
+    switch (message.text) {
+      case '/start':
+        await update.deleteSession();
+        await replyToMessage(message, {
+          text: 'Welcome to the meetwhen\\.io bot\\! Get started with `/new`\\.',
+        });
+        return;
+      case '/cancel':
+        await update.deleteSession();
+        await replyToMessage(message, {
+          text: '*Cancelled\\!*',
+        });
+        return;
+    }
   }
   // no-op
   const { callback_query } = update.data;
