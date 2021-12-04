@@ -3,8 +3,8 @@ import type { CreateSession } from './create/CreateSession';
 import type { Update } from 'telegram-typings';
 import { handleCreateUpdate } from './create/handleCreateUpdate';
 import { replyToMessage } from './utils/replyToMessage';
-import { startCreate } from './create/startCreate';
 import { sendMessage } from './utils/sendMessage';
+import { startCreate } from './create/startCreate';
 
 const startCommand = async (update: BindSession<Update>): Promise<void> => {
   const { message } = update.data;
@@ -55,11 +55,12 @@ export const handleUpdateWithError = async (update: BindSession<Update>): Promis
   const chatId = message?.chat.id ?? callback_query?.from.id ?? 0;
   try {
     await handleUpdate(update);
-  } catch (error) {
-    console.error('error', error);
+  } catch (rawError) {
+    const error = rawError as Error;
+    console.error('×', error);
     sendMessage({
       chat_id: chatId,
-      text: 'Received an error\\.',
+      text: error.message,
     });
   }
 };

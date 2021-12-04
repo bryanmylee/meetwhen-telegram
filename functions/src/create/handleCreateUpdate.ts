@@ -59,7 +59,7 @@ export const handleNameUpdate: CreateUpdateHandler = async (update, edit = false
   }
   const name = message.text ?? '';
   if (name.length === 0) {
-    throw { message: 'Name cannot be empty.' };
+    throw { message: 'The name cannot be empty\\.' };
   }
   const chatId = message.chat.id;
   if (edit) {
@@ -84,9 +84,12 @@ export const handleStartDateUpdate: CreateUpdateHandler = async (update, edit = 
     return;
   }
   const { action, dateString } = handleCalendarUpdate(update);
+  if (action === 'INVALID') {
+    throw { message: `I don't understand ${dateString}\\. Try again?` };
+  }
   const date = dayjs(dateString);
   if (date.isBefore(dayjs(), 'day')) {
-    throw { message: 'You cannot start a meet from yesterday' };
+    throw { message: 'You cannot start a meet from yesterday\\.' };
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
@@ -135,15 +138,18 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
     return;
   }
   const { action, dateString } = handleCalendarUpdate(update);
+  if (action === 'INVALID') {
+    throw { message: `I don't understand ${dateString}\\. Try again?` };
+  }
   const date = dayjs(dateString);
   if (date.isBefore(dayjs(), 'day')) {
-    throw { message: 'You cannot start a meet from yesterday.' };
+    throw { message: 'You cannot end a meet on yesterday\\.' };
   }
   const session = await update.getSession();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const startDate = dayjs(session.startDate!);
   if (!startDate.isBefore(date)) {
-    throw { message: 'Your end date must come after start date.' };
+    throw { message: 'Your end date must come after start date\\.' };
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
@@ -199,7 +205,7 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update, edit = 
   }
   const hour = parseHour(message.text ?? '');
   if (hour === undefined) {
-    throw { message: `I don't understand ${message.text}. Try again?` };
+    throw { message: `I don't understand ${message.text}\\. Try again?` };
   }
   const chatId = message.chat.id;
   const session = await update.getSession();
@@ -224,7 +230,7 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
   }
   const hour = parseHour(message.text ?? '');
   if (hour === undefined) {
-    throw { message: `I don't understand ${message.text}. Try again?` };
+    throw { message: `I don't understand ${message.text}\\. Try again?` };
   }
   const session = await update.getSession();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

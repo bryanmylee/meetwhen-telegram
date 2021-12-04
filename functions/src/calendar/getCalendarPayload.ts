@@ -9,7 +9,7 @@ export const getPayloadFromMessage = (text: string): CalendarPayload => {
       dateString: date.format('YYYYMMDD'),
     };
   }
-  return { action: 'NOOP' };
+  return { action: 'INVALID', dateString: text };
 };
 
 export const getPayloadFromCallback = (data: string): CalendarPayload => {
@@ -18,7 +18,7 @@ export const getPayloadFromCallback = (data: string): CalendarPayload => {
   }
   const tokens = data.match(/(\w+)_(\w+)/);
   if (tokens === null) {
-    return { action: 'NOOP' };
+    return { action: 'INVALID', dateString: data };
   }
   const [, action, dateString] = tokens;
   return {

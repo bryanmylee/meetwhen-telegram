@@ -1,1 +1,1 @@
-export type CalendarAction = 'PAGE' | 'SELECT' | 'NOOP';
+export type CalendarAction = 'PAGE' | 'SELECT' | 'NOOP' | 'INVALID';
