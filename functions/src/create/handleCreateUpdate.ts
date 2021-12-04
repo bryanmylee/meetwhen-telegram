@@ -5,7 +5,6 @@ import type { CreateSession } from './CreateSession';
 import type { Update } from 'telegram-typings';
 import { CREATE_PROMPTS } from './createPrompts';
 import { editMessage } from '../utils/editMessage';
-import { getCalendarPayload } from '../calendar/getCalendarPayload';
 import { parseHour } from '../utils/parseHour';
 import { renderCalendar } from '../calendar/views/renderCalendar';
 import {
@@ -20,6 +19,7 @@ import {
   renderSetStartDate,
   renderSetStartHour,
 } from './views/renderCreate';
+import { handleCalendarUpdate } from '../calendar/handleCalendarUpdate';
 
 type CreateUpdateHandler = (
   update: BindSession<Update, CreateSession>,
@@ -83,11 +83,7 @@ export const handleStartDateUpdate: CreateUpdateHandler = async (update, edit = 
   if (callback_query === undefined) {
     return;
   }
-  const data = callback_query?.data;
-  if (data === undefined) {
-    return;
-  }
-  const { action, dateString } = getCalendarPayload(data);
+  const { action, dateString } = handleCalendarUpdate(update);
   const date = dayjs(dateString);
   const chatId = callback_query.from.id;
   const messageId = callback_query.message?.message_id;
@@ -131,11 +127,7 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
   if (callback_query === undefined) {
     return;
   }
-  const data = callback_query?.data;
-  if (data === undefined) {
-    return;
-  }
-  const { action, dateString } = getCalendarPayload(data);
+  const { action, dateString } = handleCalendarUpdate(update);
   const date = dayjs(dateString);
   const chatId = callback_query.from.id;
   const messageId = callback_query.message?.message_id;
