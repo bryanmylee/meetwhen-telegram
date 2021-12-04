@@ -1,5 +1,4 @@
 import { MEETWHEN_API } from '../../env';
-// import fetch from 'node-fetch';
 import axios from 'axios';
 
 interface QueryParams {
