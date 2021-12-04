@@ -5,6 +5,8 @@ import type { Update } from 'telegram-typings';
 import { handleCreateUpdate } from './create/handleCreateUpdate';
 import { sendMessage } from './utils/sendMessage';
 import { initCreate } from './create/initCreate';
+import { initIntro } from './intro/initIntro';
+import type { IntroSession } from './intro/IntroSession';
 
 const initCommand = async (update: BindSession<Update>): Promise<void> => {
   const { message } = update.data;
@@ -12,7 +14,8 @@ const initCommand = async (update: BindSession<Update>): Promise<void> => {
     return;
   }
   switch (message.text) {
-    // case '/start':
+    case '/start':
+      return await initIntro(update as unknown as BindSession<Update, IntroSession>);
     case '/new':
       return await initCreate(update as unknown as BindSession<Update, CreateSession>);
   }
