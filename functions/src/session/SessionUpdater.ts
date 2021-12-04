@@ -18,10 +18,15 @@ export class SessionUpdater<T extends Session = Session> {
   }
 
   public async updateSession(updateSession: Partial<T>): Promise<void> {
+    this._session = {
+      ...this._session,
+      ...updateSession,
+    } as T;
     await updateSessionWithId(this.id, updateSession);
   }
 
   public async setSession(newSession: T): Promise<void> {
+    this._session = newSession as T;
     await setSessionWithId(this.id, newSession);
   }
 

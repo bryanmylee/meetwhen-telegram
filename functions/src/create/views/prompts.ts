@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import type { ConfirmAction } from '../ConfirmAction';
 import type { CreateSession } from '../CreateSession';
 import type { Dayjs } from 'dayjs';
 import type { InlineKeyboardButton, Message } from 'telegram-typings';
@@ -67,7 +68,10 @@ export const promptEndHour = async (chat_id: number, startHour: number): Promise
 };
 
 export const promptConfirm = async (chat_id: number, session: CreateSession): Promise<Message> => {
-  const inline_keyboard: InlineKeyboardButton[][] = [
+  interface ConfirmInlineButton extends InlineKeyboardButton {
+    callback_data: ConfirmAction;
+  }
+  const inline_keyboard: ConfirmInlineButton[][] = [
     [
       {
         text: session.name ?? '',
@@ -115,5 +119,57 @@ export const promptConfirm = async (chat_id: number, session: CreateSession): Pr
     reply_markup: {
       inline_keyboard,
     },
+  });
+};
+
+export const promptEditMeetingName = async (chat_id: number): Promise<void> => {
+  await sendMessage({
+    chat_id,
+    text: CREATE_PROMPTS.EDIT_NAME,
+  });
+};
+
+export const promptEditStartDate = async (chat_id: number): Promise<void> => {
+  const date = dayjs();
+  calendar(
+    date,
+    {
+      chat_id,
+      text: CREATE_PROMPTS.EDIT_DATE_START,
+    },
+    {
+      earliestDate: dayjs(),
+    }
+  );
+};
+
+export const promptEditEndDate = async (chat_id: number, startDate: Dayjs): Promise<void> => {
+  calendar(
+    startDate.add(1, 'day'),
+    {
+      chat_id,
+      text: CREATE_PROMPTS.EDIT_DATE_END,
+    },
+    {
+      earliestDate: startDate.add(1, 'day'),
+    }
+  );
+};
+
+export const promptEditStartHour = async (chat_id: number): Promise<Message> => {
+  return sendMessage({
+    chat_id,
+    text: CREATE_PROMPTS.EDIT_HOUR_START + '\n`\\[12am-11pm\\]`',
+  });
+};
+
+export const promptEditEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
+  const earliestHour = startHour + 1;
+  const latestHour = startHour;
+  return sendMessage({
+    chat_id,
+    text:
+      CREATE_PROMPTS.EDIT_HOUR_END +
+      `\n\`\\[${formatHour(earliestHour)}-${formatHour(latestHour)}\\]\``,
   });
 };
