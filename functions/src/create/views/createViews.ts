@@ -111,7 +111,7 @@ export const promptConfirm = async (chat_id: number, session: CreateSession): Pr
   ];
   return sendMessage({
     chat_id,
-    text: CREATE_PROMPTS.CONFIRM_OR_ADVANCED,
+    text: CREATE_PROMPTS.CONFIRM_OR_EDIT,
     reply_markup: {
       inline_keyboard,
     },

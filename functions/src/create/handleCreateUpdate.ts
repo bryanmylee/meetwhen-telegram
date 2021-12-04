@@ -39,7 +39,7 @@ export const handleCreateUpdate: CreateUpdateHandler = async (update) => {
       return handleStartHourUpdate(update);
     case 'MEETING_HOUR_END':
       return handleEndHourUpdate(update);
-    case 'CONFIRM_OR_ADVANCED':
+    case 'CONFIRM_OR_EDIT':
       return handleConfirmOrMoreUpdate(update);
     case 'EDIT_NAME':
       return handleNameUpdate(update, true);
@@ -68,7 +68,7 @@ export const handleNameUpdate: CreateUpdateHandler = async (update, edit = false
   const chatId = message.chat.id;
   await update.updateSession({
     name,
-    LATEST_PROMPT: edit ? 'CONFIRM_OR_ADVANCED' : 'MEETING_DATE_START',
+    LATEST_PROMPT: edit ? 'CONFIRM_OR_EDIT' : 'MEETING_DATE_START',
   });
   if (edit) {
     await promptConfirm(chatId, await update.getSession());
@@ -167,7 +167,7 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
       if (edit) {
         await update.updateSession({
           endDate: dateString,
-          LATEST_PROMPT: 'CONFIRM_OR_ADVANCED',
+          LATEST_PROMPT: 'CONFIRM_OR_EDIT',
         });
         await promptConfirm(chatId, await update.getSession());
       } else {
@@ -230,7 +230,7 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
   });
   await update.updateSession({
     endHour: hour,
-    LATEST_PROMPT: 'CONFIRM_OR_ADVANCED',
+    LATEST_PROMPT: 'CONFIRM_OR_EDIT',
   });
   await promptConfirm(message.chat.id, await update.getSession());
 };
