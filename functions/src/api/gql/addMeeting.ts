@@ -1,4 +1,4 @@
-import type { Interval, IntervalDTO, Meeting } from '../types';
+import type { Interval, Meeting } from '../types';
 import { IntervalSerializer } from '../types';
 import { query } from '.';
 
@@ -12,7 +12,6 @@ mutation ($name: String!, $emoji: String, $color: String, $intervals: [IntervalI
 			id
 			name
 		}
-		total
 	}
 }`;
 
@@ -32,7 +31,6 @@ interface AddMeetingResolved {
       id: string;
       name: string;
     };
-    total: IntervalDTO;
   };
 }
 
@@ -55,6 +53,5 @@ export const addMeeting = async ({
     color,
     intervals,
     schedules: [],
-    total: IntervalSerializer.deserialize(addMeeting.total),
   } as Meeting;
 };

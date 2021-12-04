@@ -7,7 +7,6 @@ export interface ShallowMeeting extends Identifiable {
   color: string;
   slug: string;
   owner: Partial<User> | null;
-  total: Interval;
 }
 
 export interface Meeting extends ShallowMeeting {
@@ -21,7 +20,6 @@ export interface ShallowMeetingDTO extends Identifiable {
   color: string;
   slug: string;
   owner: Partial<User> | null;
-  total: IntervalDTO;
 }
 
 export interface MeetingDTO extends Identifiable {
@@ -30,7 +28,6 @@ export interface MeetingDTO extends Identifiable {
   color: string;
   slug: string;
   owner: Partial<UserDTO> | null;
-  total: IntervalDTO;
   intervals: IntervalDTO[];
   schedules: ScheduleDTO[];
 }

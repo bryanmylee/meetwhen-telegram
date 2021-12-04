@@ -20,7 +20,7 @@ export interface IntervalDTO {
 export class IntervalSerializer {
   static serialize(interval: Interval): IntervalDTO {
     if (interval == null) {
-      throw { message: 'Failed to serialize interval' };
+      throw new Error('Failed to serialize interval');
     }
     const { beg, end } = interval;
     return {
@@ -31,7 +31,7 @@ export class IntervalSerializer {
 
   static deserialize(interval: IntervalDTO): Interval {
     if (interval == null) {
-      throw { message: 'Failed to deserialize interval' };
+      throw new Error('Failed to deserialize interval');
     }
     const { beg, end } = interval;
     return {

@@ -9,6 +9,7 @@ import { parseHour } from '../utils/parseHour';
 import { renderCalendar } from '../calendar/views/renderCalendar';
 import {
   renderConfirm,
+  renderDone,
   renderSetEndDate,
   renderSetEndHour,
   renderSetName,
@@ -17,6 +18,7 @@ import {
 } from './views/renderCreate';
 import { handleCalendarUpdate } from '../calendar/handleCalendarUpdate';
 import { deleteMessage } from '../utils/deleteMessage';
+import { confirmCreate } from './confirmCreate';
 
 type CreateUpdateHandler = (
   update: BindSession<Update, CreateSession>,
@@ -59,7 +61,7 @@ export const handleNameUpdate: CreateUpdateHandler = async (update, edit = false
   }
   const name = message.text ?? '';
   if (name.length === 0) {
-    throw { message: 'The name cannot be empty\\.' };
+    throw new Error('The name cannot be empty\\.');
   }
   const chatId = message.chat.id;
   if (edit) {
@@ -85,11 +87,11 @@ export const handleStartDateUpdate: CreateUpdateHandler = async (update, edit = 
   }
   const { action, dateString } = handleCalendarUpdate(update);
   if (action === 'INVALID') {
-    throw { message: `I don't understand ${dateString}\\. Try again?` };
+    throw new Error(`I don't understand ${dateString}\\. Try again?`);
   }
   const date = dayjs(dateString);
   if (date.isBefore(dayjs(), 'day')) {
-    throw { message: 'You cannot start a meet from yesterday\\.' };
+    throw new Error('You cannot start a meet from yesterday\\.');
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
@@ -139,17 +141,17 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
   }
   const { action, dateString } = handleCalendarUpdate(update);
   if (action === 'INVALID') {
-    throw { message: `I don't understand ${dateString}\\. Try again?` };
+    throw new Error(`I don't understand ${dateString}\\. Try again?`);
   }
   const date = dayjs(dateString);
   if (date.isBefore(dayjs(), 'day')) {
-    throw { message: 'You cannot end a meet on yesterday\\.' };
+    throw new Error('You cannot end a meet on yesterday\\.');
   }
   const session = await update.getSession();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const startDate = dayjs(session.startDate!);
   if (!startDate.isBefore(date)) {
-    throw { message: 'Your end date must come after start date\\.' };
+    throw new Error('Your end date must come after start date\\.');
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
@@ -205,7 +207,7 @@ export const handleStartHourUpdate: CreateUpdateHandler = async (update, edit = 
   }
   const hour = parseHour(message.text ?? '');
   if (hour === undefined) {
-    throw { message: `I don't understand ${message.text}\\. Try again?` };
+    throw new Error(`I don't understand ${message.text}\\. Try again?`);
   }
   const chatId = message.chat.id;
   const session = await update.getSession();
@@ -230,7 +232,7 @@ export const handleEndHourUpdate: CreateUpdateHandler = async (update) => {
   }
   const hour = parseHour(message.text ?? '');
   if (hour === undefined) {
-    throw { message: `I don't understand ${message.text}\\. Try again?` };
+    throw new Error(`I don't understand ${message.text}\\. Try again?`);
   }
   const session = await update.getSession();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -260,10 +262,16 @@ export const handleConfirmOrEdit: CreateUpdateHandler = async (update) => {
   }
   const chatId = callback_query.from.id;
   switch (action) {
-    case 'SELECT_CONFIRM':
-    case 'SELECT_CANCEL':
-      await renderConfirm(callback_query.from.id, await update.getSession());
+    case 'SELECT_CONFIRM': {
+      const meeting = await confirmCreate(update);
+      await renderDone(chatId, meeting);
       break;
+    }
+    case 'SELECT_CANCEL': {
+      await renderConfirm(chatId, await update.getSession());
+      await renderDone(chatId);
+      break;
+    }
     case 'EDIT_NAME':
       await Promise.all([
         update.updateSession({

@@ -7,6 +7,7 @@ import { CREATE_PROMPTS } from '../createPrompts';
 import { formatHour } from '../../utils/formatHour';
 import { renderCalendar } from '../../calendar/views/renderCalendar';
 import { sendMessage } from '../../utils/sendMessage';
+import type { Meeting } from '../../api/types';
 
 export const renderStartCreate = async (chat_id: number): Promise<Message> => {
   return await sendMessage({
@@ -112,6 +113,24 @@ export const renderConfirm = async (chat_id: number, session: CreateSession): Pr
   return await sendMessage({
     chat_id,
     text: CREATE_PROMPTS.CONFIRM_OR_EDIT,
+    reply_markup: {
+      inline_keyboard,
+    },
+  });
+};
+
+export const renderDone = async (chat_id: number, meeting: Meeting): Promise<Message> => {
+  const inline_keyboard: InlineKeyboardButton[][] = [
+    [
+      {
+        text: '',
+        url: `https://meetwhen.io/${meeting.slug}`,
+      },
+    ],
+  ];
+  return await sendMessage({
+    chat_id,
+    text: `All done\\! Visit your meet [here](https://meetwhen.io/${meeting.slug})\\.`,
     reply_markup: {
       inline_keyboard,
     },

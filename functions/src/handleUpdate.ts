@@ -1,3 +1,4 @@
+import { inspect } from 'util';
 import type { BindSession } from './session/BindSession';
 import type { CreateSession } from './create/CreateSession';
 import type { Update } from 'telegram-typings';
@@ -57,7 +58,7 @@ export const handleUpdateWithError = async (update: BindSession<Update>): Promis
     await handleUpdate(update);
   } catch (rawError) {
     const error = rawError as Error;
-    console.error('×', error);
+    console.error('×', inspect(error, { showHidden: false, depth: null, colors: true }));
     sendMessage({
       chat_id: chatId,
       text: error.message,
