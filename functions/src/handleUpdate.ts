@@ -5,22 +5,13 @@ import type { Update } from 'telegram-typings';
 import { handleCreateUpdate } from './create/handleCreateUpdate';
 import { sendMessage } from './utils/sendMessage';
 import { initCreate } from './create/initCreate';
-import { initIntro } from './intro/initIntro';
-import type { IntroSession } from './intro/IntroSession';
-import { handleIntroUpdate } from './intro/handleIntroUpdate';
+import { initTz } from './timezone/initTz';
+import { handleTzUpdate } from './timezone/handleTzUpdate';
 
-const initCommand = async (update: BindSession<Update>): Promise<void> => {
-  const { message } = update.data;
-  if (message === undefined) {
-    return;
-  }
-  switch (message.text) {
-    case '/start':
-      return await initIntro(update as unknown as BindSession<Update, IntroSession>);
-    case '/new':
-      return await initCreate(update as unknown as BindSession<Update, CreateSession>);
-  }
-};
+const INTRO_MESSAGE = `
+Welcome to the meetwhen\\.io bot\\!
+Get started by setting your timezone with \`/timezone\`\\.
+`;
 
 export const handleUpdate = async (update: BindSession<Update>): Promise<void> => {
   // no-op
@@ -28,24 +19,43 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
   if (callback_query?.data === 'NOOP') {
     return;
   }
-  if (update.data.message?.text === '/cancel') {
-    await update.deleteSession();
-    await sendMessage({
-      chat_id: update.chatId,
-      text: '*Cancelled\\!*',
-    });
-    return;
-  }
-
   const session = await update.getSession();
   if (session?.COMMAND === undefined) {
     return await initCommand(update);
   }
   switch (session.COMMAND) {
-    case 'start':
-      return await handleIntroUpdate(update as unknown as BindSession<Update, IntroSession>);
+    case 'timezone':
+      return await handleTzUpdate(update);
     case 'new':
       return await handleCreateUpdate(update as unknown as BindSession<Update, CreateSession>);
+  }
+};
+
+const initCommand = async (update: BindSession<Update>): Promise<void> => {
+  const { message } = update.data;
+  if (message === undefined) {
+    return;
+  }
+  const { chatId } = update;
+  switch (message.text) {
+    case '/cancel':
+      await update.deleteSession();
+      await sendMessage({
+        chat_id: chatId,
+        text: '*Cancelled\\!*',
+      });
+      return;
+    case '/start':
+      await update.deleteSession();
+      await sendMessage({
+        chat_id: chatId,
+        text: INTRO_MESSAGE,
+      });
+      return;
+    case '/timezone':
+      return await initTz(update);
+    case '/new':
+      return await initCreate(update as unknown as BindSession<Update, CreateSession>);
   }
 };
 

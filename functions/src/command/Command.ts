@@ -1,1 +1,1 @@
-export type Command = 'start' | 'new' | 'cancel';
+export type Command = 'cancel' | 'start' | 'timezone' | 'new';

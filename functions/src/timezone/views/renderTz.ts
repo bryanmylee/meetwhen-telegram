@@ -1,11 +1,11 @@
 import type { Message } from 'telegram-typings';
 import { sendMessage } from '../../utils/sendMessage';
-import { INTRO_PROMPTS } from '../introPrompts';
+import { TZ_PROMPTS } from '../tzPrompts';
 
-export const renderStartIntro = async (chat_id: number): Promise<Message> => {
+export const renderAskForLocation = async (chat_id: number): Promise<Message> => {
   return await sendMessage({
     chat_id,
-    text: INTRO_PROMPTS.SET_TZ_LOCATION,
+    text: TZ_PROMPTS.SET_TZ_LOCATION,
     reply_markup: {
       keyboard: [
         [
