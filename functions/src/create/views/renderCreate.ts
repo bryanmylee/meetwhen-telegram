@@ -3,11 +3,12 @@ import type { ConfirmAction } from '../ConfirmAction';
 import type { CreateSession } from '../CreateSession';
 import type { Dayjs } from 'dayjs';
 import type { InlineKeyboardButton, Message } from 'telegram-typings';
+import type { Meeting } from '../../api/types';
 import { CREATE_PROMPTS } from '../createPrompts';
 import { formatHour } from '../../utils/formatHour';
 import { renderCalendar } from '../../calendar/views/renderCalendar';
+import { renderHourPicker } from '../../hourPicker/views/renderHourPicker';
 import { sendMessage } from '../../utils/sendMessage';
-import type { Meeting } from '../../api/types';
 
 export const renderStartCreate = async (chat_id: number): Promise<Message> => {
   return await sendMessage({
@@ -47,20 +48,16 @@ export const renderSetEndDate = async (chat_id: number, startDate: Dayjs): Promi
 };
 
 export const renderSetStartHour = async (chat_id: number): Promise<Message> => {
-  return await sendMessage({
+  return await renderHourPicker(0, {
     chat_id,
-    text: CREATE_PROMPTS.MEETING_HOUR_START + '\n`\\[12am-11pm\\]`',
+    text: CREATE_PROMPTS.MEETING_HOUR_START,
   });
 };
 
 export const renderSetEndHour = async (chat_id: number, startHour: number): Promise<Message> => {
-  const earliestHour = startHour + 1;
-  const latestHour = startHour;
-  return await sendMessage({
+  return await renderHourPicker(startHour, {
     chat_id,
-    text:
-      CREATE_PROMPTS.MEETING_HOUR_END +
-      `\n\`\\[${formatHour(earliestHour)}-${formatHour(latestHour)}\\]\``,
+    text: CREATE_PROMPTS.MEETING_HOUR_START,
   });
 };
 

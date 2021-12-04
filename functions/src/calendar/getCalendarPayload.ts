@@ -16,7 +16,7 @@ export const getPayloadFromCallback = (data: string): CalendarPayload => {
   if (data === undefined) {
     return { action: 'NOOP' };
   }
-  const tokens = data.match(/(\w+)_(\w+)/);
+  const tokens = data.match(/([A-Z]+)_(\w+)/);
   if (tokens === null) {
     return { action: 'INVALID', dateString: data };
   }

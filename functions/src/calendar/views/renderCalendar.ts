@@ -15,7 +15,7 @@ export const renderCalendar = async (
   { text, ...options }: SendMessage,
   { updateMessageId, earliestDate, selectedDate }: RenderOptions = {}
 ): Promise<Message> => {
-  const withSelectedText =
+  const textLabel =
     text +
     (selectedDate !== undefined
       ? `\n\`${selectedDate.format('D MMM YYYY')}\``
@@ -24,14 +24,14 @@ export const renderCalendar = async (
     if (updateMessageId !== undefined) {
       return editMessage({
         ...options,
-        text: withSelectedText,
+        text: textLabel,
         message_id: updateMessageId,
         reply_markup: undefined,
       });
     } else {
       return sendMessage({
         ...options,
-        text: withSelectedText,
+        text: textLabel,
         reply_markup: undefined,
       });
     }
@@ -43,14 +43,14 @@ export const renderCalendar = async (
   if (updateMessageId !== undefined) {
     return await editMessage({
       ...options,
-      text: withSelectedText,
+      text: textLabel,
       message_id: updateMessageId,
       reply_markup: { inline_keyboard },
     });
   } else {
     return await sendMessage({
       ...options,
-      text: withSelectedText,
+      text: textLabel,
       reply_markup: { inline_keyboard },
     });
   }
