@@ -1,4 +1,3 @@
-import type { CalendarAction } from '../CalendarAction';
 import type { Dayjs } from 'dayjs';
 import type { InlineKeyboardButton, Message, SendMessage } from 'telegram-typings';
 import { editMessage } from '../../utils/editMessage';
@@ -8,20 +7,17 @@ import { sendMessage } from '../../utils/sendMessage';
 export interface RenderOptions {
   updateMessageId?: number;
   earliestDate?: Dayjs;
-  selectedDate?: Dayjs;
+  select?: boolean;
 }
 
 export const renderCalendar = async (
   date: Dayjs,
   { text, ...options }: SendMessage,
-  { updateMessageId, earliestDate, selectedDate }: RenderOptions = {}
+  { updateMessageId, earliestDate, select = false }: RenderOptions = {}
 ): Promise<Message> => {
   const textLabel =
-    text +
-    (selectedDate !== undefined
-      ? `\n\`${selectedDate.format('D MMM YYYY')}\``
-      : '\n`\\[date month year\\]`');
-  if (selectedDate !== undefined) {
+    text + (select ? `\n\`${date.format('D MMM YYYY')}\`` : '\n`\\[date month year\\]`');
+  if (select) {
     if (updateMessageId !== undefined) {
       return editMessage({
         ...options,
@@ -37,9 +33,9 @@ export const renderCalendar = async (
       });
     }
   }
-  const monthButtons = getMonthButtons(date, { selectedDate });
+  const monthButtons = getMonthButtons(date, { select });
   const dayButtons = getDayButtons();
-  const dateButtons = getDateButtons(date, { earliestDate, selectedDate });
+  const dateButtons = getDateButtons(date, { earliestDate, select });
   const inline_keyboard = monthButtons.concat(dayButtons, dateButtons);
   if (updateMessageId !== undefined) {
     return await editMessage({
@@ -59,10 +55,10 @@ export const renderCalendar = async (
 
 const getMonthButtons = (
   date: Dayjs,
-  { selectedDate }: RenderOptions
+  { select = false }: RenderOptions
 ): InlineKeyboardButton[][] => {
   const monthLabel: InlineKeyboardButton = { text: date.format('MMM YYYY'), callback_data: 'NOOP' };
-  if (selectedDate !== undefined) {
+  if (select) {
     return [[monthLabel]];
   }
   return [
@@ -91,7 +87,7 @@ const getDayButtons = (): InlineKeyboardButton[][] => {
 
 const getDateButtons = (
   date: Dayjs,
-  { earliestDate, selectedDate }: RenderOptions
+  { earliestDate, select }: RenderOptions
 ): InlineKeyboardButton[][] => {
   const firstDayOffset = date.date(1).day();
   const inline_keyboard: InlineKeyboardButton[][] = [];
@@ -104,8 +100,8 @@ const getDateButtons = (
     const dateOfMonth = date.date(numOfMonth);
 
     let button: InlineKeyboardButton;
-    if (selectedDate !== undefined) {
-      if (dateOfMonth.isSame(selectedDate, 'day')) {
+    if (select) {
+      if (dateOfMonth.isSame(date, 'day')) {
         button = { text: `${numOfMonth}`, callback_data: 'NOOP' };
       } else {
         button = { text: ' ', callback_data: 'NOOP' };
@@ -132,22 +128,4 @@ const getDateButtons = (
   }
 
   return inline_keyboard;
-};
-
-export interface UpdateOptions {
-  updateMessageId?: number;
-  action: CalendarAction;
-  pagedDate?: Dayjs;
-}
-
-export const updateCalendar = async (
-  date: Dayjs,
-  options: SendMessage,
-  { updateMessageId, action, pagedDate }: UpdateOptions = { action: 'PAGE' }
-): Promise<Message> => {
-  return await renderCalendar(date, options, {
-    updateMessageId,
-    earliestDate: action === 'PAGE' ? pagedDate : undefined,
-    selectedDate: action === 'SELECT' ? date : undefined,
-  });
 };

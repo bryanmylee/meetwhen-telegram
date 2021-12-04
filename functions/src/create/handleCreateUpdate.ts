@@ -6,7 +6,7 @@ import type { Update } from 'telegram-typings';
 import { CREATE_PROMPTS } from './createPrompts';
 import { editMessage } from '../utils/editMessage';
 import { parseHour } from '../utils/parseHour';
-import { renderCalendar, updateCalendar } from '../calendar/views/renderCalendar';
+import { renderCalendar } from '../calendar/views/renderCalendar';
 import {
   renderCancel,
   renderConfirm,
@@ -92,38 +92,19 @@ export const handleStartDateUpdate: CreateUpdateHandler = async (update, edit = 
   }
   const date = dayjs(dateString);
   if (date.isBefore(dayjs(), 'day')) {
-    throw new Error('You cannot start a meet from yesterday\\.');
+    throw new Error('You cannot start before today\\.');
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
   const messageId =
     callback_query?.message?.message_id ?? (await update.getSession()).MESSAGE_ID_TO_EDIT;
+  await renderCalendar(
+    date,
+    { chat_id: chatId, text: CREATE_PROMPTS.MEETING_DATE_START },
+    { updateMessageId: messageId, earliestDate: dayjs(), select: action === 'SELECT' }
+  );
   switch (action) {
-    case 'PAGE':
-      await renderCalendar(
-        date,
-        {
-          chat_id: chatId,
-          text: CREATE_PROMPTS.MEETING_DATE_START,
-        },
-        {
-          updateMessageId: messageId,
-          earliestDate: dayjs(),
-        }
-      );
-      return;
     case 'SELECT': {
-      await renderCalendar(
-        dayjs(dateString),
-        {
-          chat_id: chatId,
-          text: CREATE_PROMPTS.MEETING_DATE_START,
-        },
-        {
-          updateMessageId: messageId,
-          selectedDate: date,
-        }
-      );
       const message = await renderSetEndDate(chatId, date);
       await update.updateSession({
         startDate: dateString,
@@ -145,22 +126,22 @@ export const handleEndDateUpdate: CreateUpdateHandler = async (update, edit = fa
     throw new Error(`I don't understand ${dateString}\\. Try again?`);
   }
   const date = dayjs(dateString);
-  if (date.isBefore(dayjs(), 'day')) {
-    throw new Error('You cannot end a meet on yesterday\\.');
+  if (action === 'SELECT' && date.isBefore(dayjs(), 'day')) {
+    throw new Error('You cannot end before today\\.');
   }
   const session = await update.getSession();
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const startDate = dayjs(session.startDate!);
-  if (date.isBefore(startDate)) {
-    throw new Error("Your end date can't be before your start date\\.");
+  if (action === 'SELECT' && date.isBefore(startDate)) {
+    throw new Error('You cannot end before you start\\.');
   }
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const chatId = (message?.chat.id ?? callback_query?.from.id)!;
   const messageId = callback_query?.message?.message_id ?? session.MESSAGE_ID_TO_EDIT;
-  await updateCalendar(
+  await renderCalendar(
     date,
     { chat_id: chatId, text: CREATE_PROMPTS.MEETING_DATE_END },
-    { action, updateMessageId: messageId }
+    { updateMessageId: messageId, earliestDate: startDate, select: action === 'SELECT' }
   );
   switch (action) {
     case 'SELECT': {
