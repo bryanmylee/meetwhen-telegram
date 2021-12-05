@@ -10,6 +10,13 @@ import { renderCalendar } from '../../calendar/views/renderCalendar';
 import { renderHourPicker } from '../../hourPicker/views/renderHourPicker';
 import { sendMessage } from '../../utils/sendMessage';
 
+export const renderAskForTz = async (chat_id: number): Promise<Message> => {
+  return await sendMessage({
+    chat_id,
+    text: 'You need to set your timezone first\\.',
+  });
+};
+
 export const renderStartCreate = async (chat_id: number): Promise<Message> => {
   return await sendMessage({
     chat_id,
