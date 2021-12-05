@@ -44,3 +44,23 @@ export const renderAskForManualTz = async (chat_id: number): Promise<Message> =>
     },
   });
 };
+
+export const renderDone = async (chat_id: number, timezone: string): Promise<Message> => {
+  return await sendMessage({
+    chat_id,
+    text: `
+Your timezone has been set to \`${timezone}\`\\.
+
+Create a new meet\\!`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: 'New meet 📘',
+            callback_data: 'COMMAND_new',
+          },
+        ],
+      ],
+    },
+  });
+};
