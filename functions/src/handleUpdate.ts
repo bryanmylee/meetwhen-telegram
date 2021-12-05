@@ -11,7 +11,7 @@ import { getCommand } from './command/getCommand';
 
 const INTRO_MESSAGE = `
 Welcome to the meetwhen\\.io bot\\!
-Get started by setting your timezone with \`/timezone\`\\.
+Get started by setting your timezone\\.
 `;
 
 export const handleUpdate = async (update: BindSession<Update>): Promise<void> => {
@@ -49,6 +49,9 @@ const initCommand = async (update: BindSession<Update>): Promise<void> => {
       await sendMessage({
         chat_id: chatId,
         text: INTRO_MESSAGE,
+        reply_markup: {
+          inline_keyboard: [[{ text: 'Set timezone 🕙', callback_data: 'COMMAND_timezone' }]],
+        },
       });
       return;
     case 'timezone':
