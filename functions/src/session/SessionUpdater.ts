@@ -31,7 +31,7 @@ export class SessionUpdater<T extends Session = Session> {
   }
 
   public async resetSession(): Promise<void> {
-    const timezone = this._session?.TZ;
+    const timezone = (await this.getSession()).TZ;
     await setSessionWithId(this.sessionId, {
       LATEST_PROMPT: '',
       ...(timezone ? { TZ: timezone } : {}),
