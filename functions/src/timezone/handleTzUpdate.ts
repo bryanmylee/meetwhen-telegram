@@ -37,7 +37,7 @@ Create a new meet\\!`,
         [
           {
             text: 'New meet 📘',
-            callback_data: 'COMMAND_NEW',
+            callback_data: 'COMMAND_new',
           },
         ],
       ],
