@@ -18,7 +18,7 @@ const handleSetTzByLocation: TzUpdateHandler = async (update) => {
   const location = update.data.message?.location;
   if (location === undefined) {
     // TODO render manual select.
-    return await update.setSession({
+    return await update.updateSession({
       LATEST_PROMPT: 'SET_TZ_MANUAL',
     });
   }

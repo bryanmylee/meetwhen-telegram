@@ -5,7 +5,7 @@ import { renderAskForLocation } from './views/renderTz';
 export const initTz = async (update: BindSession<Update>): Promise<void> => {
   const { chatId } = update;
   await renderAskForLocation(chatId);
-  await update.setSession({
+  await update.updateSession({
     COMMAND: 'timezone',
     LATEST_PROMPT: 'SET_TZ_LOCATION',
   });
