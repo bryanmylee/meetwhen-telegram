@@ -7,6 +7,7 @@ import { sendMessage } from './utils/sendMessage';
 import { initCreate } from './create/initCreate';
 import { initTz } from './timezone/initTz';
 import { handleTzUpdate } from './timezone/handleTzUpdate';
+import { getCommand } from './command/getCommand';
 
 const INTRO_MESSAGE = `
 Welcome to the meetwhen\\.io bot\\!
@@ -40,22 +41,19 @@ export const handleUpdate = async (update: BindSession<Update>): Promise<void> =
 };
 
 const initCommand = async (update: BindSession<Update>): Promise<void> => {
-  const { message } = update.data;
-  if (message === undefined) {
-    return;
-  }
-  const { chatId } = update;
-  switch (message.text) {
-    case '/start':
+  const { chatId, data } = update;
+  const { command } = getCommand(data);
+  switch (command) {
+    case 'start':
       await update.resetSession();
       await sendMessage({
         chat_id: chatId,
         text: INTRO_MESSAGE,
       });
       return;
-    case '/timezone':
+    case 'timezone':
       return await initTz(update);
-    case '/new':
+    case 'new':
       return await initCreate(update as unknown as BindSession<Update, CreateSession>);
   }
 };

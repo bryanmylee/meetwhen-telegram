@@ -1,8 +1,8 @@
 import type { BotCommand } from 'telegram-typings';
-import type { Command } from './Command';
+import type { CommandType } from './Command';
 
 interface MyBotCommand extends BotCommand {
-  command: Command;
+  command: CommandType;
 }
 
 export const COMMANDS: MyBotCommand[] = [

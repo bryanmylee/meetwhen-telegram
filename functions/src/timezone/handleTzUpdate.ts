@@ -28,7 +28,20 @@ const handleSetTzByLocation: TzUpdateHandler = async (update) => {
   });
   await sendMessage({
     chat_id: update.chatId,
-    text: `Your timezone has been set to \`${timezone}\`\\.`,
+    text: `
+Your timezone has been set to \`${timezone}\`\\.
+
+Create a new meet\\!`,
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: 'New meet 📘',
+            callback_data: 'COMMAND_NEW',
+          },
+        ],
+      ],
+    },
   });
   await update.resetSession();
 };
