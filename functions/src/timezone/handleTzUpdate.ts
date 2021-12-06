@@ -1,7 +1,6 @@
-import { find } from 'geo-tz';
-import type { Update } from 'telegram-typings';
 import type { BindSession } from '../session/BindSession';
-import { sendMessage } from '../utils/sendMessage';
+import type { Update } from 'telegram-typings';
+import { find } from 'geo-tz';
 import { getTzLabel } from './getTzLabel';
 import { parseUtcOffset } from './parseUtcOffset';
 import { renderAskForManualTz, renderDone } from './views/renderTz';
