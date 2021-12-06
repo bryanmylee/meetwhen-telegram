@@ -1,5 +1,6 @@
 // organize-imports-ignore
-export * from './Meeting';
-export * from './Schedule';
-export * from './User';
-export * from './Interval';
+export type { Meeting, MeetingDTO, ShallowMeeting, ShallowMeetingDTO } from './Meeting';
+export type { Schedule, ScheduleDTO } from './Schedule';
+export type { ShallowUser, User, UserDTO } from './User';
+export type { Interval, IntervalDTO, LocalTimeInterval } from './Interval';
+export { IntervalSerializer } from './Interval';
