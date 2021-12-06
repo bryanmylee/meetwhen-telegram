@@ -1,6 +1,6 @@
+import { query } from '.';
 import type { Interval, Meeting } from '../types';
 import { IntervalSerializer } from '../types';
-import { query } from '.';
 
 const ADD_MEETING = `
 mutation ($name: String!, $emoji: String, $color: String, $intervals: [IntervalInput!]!) {
@@ -16,42 +16,42 @@ mutation ($name: String!, $emoji: String, $color: String, $intervals: [IntervalI
 }`;
 
 export interface AddMeetingVars {
-  name: string;
-  emoji?: string;
-  color?: string;
-  intervals: Interval[];
+	name: string;
+	emoji?: string;
+	color?: string;
+	intervals: Interval[];
 }
 
 interface AddMeetingResolved {
-  addMeeting: {
-    id: string;
-    slug: string;
-    emoji: string;
-    owner: null | {
-      id: string;
-      name: string;
-    };
-  };
+	addMeeting: {
+		id: string;
+		slug: string;
+		emoji: string;
+		owner: null | {
+			id: string;
+			name: string;
+		};
+	};
 }
 
 export const addMeeting = async ({
-  name,
-  emoji,
-  color,
-  intervals,
+	name,
+	emoji,
+	color,
+	intervals,
 }: AddMeetingVars): Promise<Meeting> => {
-  const variables = {
-    name,
-    emoji,
-    color,
-    intervals: intervals.map(IntervalSerializer.serialize),
-  };
-  const { addMeeting } = (await query({ query: ADD_MEETING, variables })) as AddMeetingResolved;
-  return {
-    ...addMeeting,
-    name,
-    color,
-    intervals,
-    schedules: [],
-  } as Meeting;
+	const variables = {
+		name,
+		emoji,
+		color,
+		intervals: intervals.map(IntervalSerializer.serialize),
+	};
+	const { addMeeting } = (await query({ query: ADD_MEETING, variables })) as AddMeetingResolved;
+	return {
+		...addMeeting,
+		name,
+		color,
+		intervals,
+		schedules: [],
+	} as Meeting;
 };

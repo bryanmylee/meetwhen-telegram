@@ -5,8 +5,8 @@
  */
 
 {
-  "env": {
-    "bot_token": "token",
-    "meetwhen_api": "https://meetwhen.com/api/graphql"
-  }
+	"env": {
+		"bot_token": "token",
+		"meetwhen_api": "https://meetwhen.com/api/graphql"
+	}
 }

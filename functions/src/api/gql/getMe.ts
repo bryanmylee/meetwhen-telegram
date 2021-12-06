@@ -1,5 +1,5 @@
-import type { ShallowUser } from '../types';
 import { query } from '.';
+import type { ShallowUser } from '../types';
 
 const GET_ME = `
 {
@@ -12,15 +12,15 @@ const GET_ME = `
 }`;
 
 interface MeResolved {
-  me: ShallowUser;
+	me: ShallowUser;
 }
 
 export const getMe = async (accessToken: string): Promise<ShallowUser> => {
-  const { me } = (await query({
-    query: GET_ME,
-    headers: {
-      cookie: `access-token=${accessToken}`,
-    },
-  })) as MeResolved;
-  return me;
+	const { me } = (await query({
+		query: GET_ME,
+		headers: {
+			cookie: `access-token=${accessToken}`,
+		},
+	})) as MeResolved;
+	return me;
 };
