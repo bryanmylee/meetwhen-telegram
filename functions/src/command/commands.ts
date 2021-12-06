@@ -7,12 +7,12 @@ interface MyBotCommand extends BotCommand {
 
 export const COMMANDS: MyBotCommand[] = [
 	{
-		command: 'timezone',
-		description: 'Set your current timezone',
-	},
-	{
 		command: 'new',
 		description: 'Create a new meet',
+	},
+	{
+		command: 'timezone',
+		description: 'Set your current timezone',
 	},
 	{
 		command: 'cancel',
