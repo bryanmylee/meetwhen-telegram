@@ -1,7 +1,7 @@
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import type { Update } from 'telegram-typings';
 import { addMeeting } from '../api/gql/addMeeting';
 import type { Interval, Meeting } from '../api/types';
